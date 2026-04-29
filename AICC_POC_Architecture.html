@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AICrowdCare POC — End-to-End Architecture Diagram</title>
+<style>
+  :root {
+    /* AICC Dark Blue palette — aligned with AICC brand font color (Calibri dark blue) */
+    --aicc-navy:      #0B2545;  /* deepest */
+    --aicc-blue:      #13315C;  /* primary */
+    --aicc-mid:       #1E3A6F;  /* mid */
+    --aicc-accent:    #3E7CB1;  /* accent */
+    --aicc-light:     #8DA9C4;  /* secondary text */
+    --aicc-pale:      #EEF4ED;  /* light surface */
+    --aicc-white:     #FFFFFF;
+
+    /* Category colors — used sparingly, all desaturated to sit on navy */
+    --cat-input:      #4FB3E8;  /* cyan-blue for Inputs */
+    --cat-fusion:     #F0B429;  /* amber for Fusion Layer */
+    --cat-ai:         #A78BFA;  /* lavender for AI Engine */
+    --cat-dispatch:   #34D399;  /* green for Dispatch */
+    --cat-source:     #F87171;  /* coral for Sources */
+
+    --border:         rgba(255,255,255,0.12);
+    --border-strong:  rgba(255,255,255,0.22);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body {
+    background: var(--aicc-navy);
+    color: var(--aicc-white);
+    /* Sans-serif stack — Calibri first (AICC font), then system sans-serifs */
+    font-family: 'Calibri', 'Segoe UI', 'Helvetica Neue', Arial, system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  body {
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(62,124,177,0.22), transparent 60%),
+      radial-gradient(1000px 500px at 110% 10%, rgba(141,169,196,0.10), transparent 60%),
+      linear-gradient(180deg, #0B2545 0%, #0A1F3A 60%, #081A31 100%);
+    padding: 32px 28px 64px;
+  }
+
+  .page { max-width: 1580px; margin: 0 auto; }
+
+  /* ============ HEADER ============ */
+  header.masthead {
+    background: linear-gradient(135deg, #0E2A50 0%, #13315C 60%, #1E3A6F 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    padding: 34px 40px;
+    margin-bottom: 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    position: relative;
+    overflow: hidden;
+  }
+  header.masthead::before {
+    content:"";
+    position:absolute; inset:0;
+    background: radial-gradient(600px 200px at 90% 0%, rgba(62,124,177,0.35), transparent 60%);
+    pointer-events:none;
+  }
+  .brand {
+    display:flex; align-items:center; gap:16px;
+    margin-bottom: 10px;
+  }
+  .brand-mark {
+    width:54px; height:54px; border-radius:14px;
+    background: linear-gradient(135deg, #3E7CB1, #13315C);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:22px; letter-spacing:0.5px;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  h1 {
+    font-size: 28px; font-weight: 800; letter-spacing: -0.3px;
+    color: var(--aicc-white);
+  }
+  .subtitle {
+    color: var(--aicc-light);
+    font-size: 15px;
+    max-width: 1000px;
+    margin-top: 6px;
+  }
+  .legend {
+    display:flex; flex-wrap:wrap; gap: 14px 22px;
+    margin-top: 22px; padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  .legend-item { display:flex; align-items:center; gap:8px; font-size:13px; color: var(--aicc-light); }
+  .swatch { width:14px; height:14px; border-radius:4px; border:1px solid rgba(255,255,255,0.2); }
+
+  /* ============ DIAGRAM PANEL ============ */
+  .panel {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  .panel-title {
+    font-size: 18px; font-weight: 700; color: var(--aicc-white);
+    margin-bottom: 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .panel-title .bar { width:4px; height:20px; background: var(--aicc-accent); border-radius:2px; }
+  .panel-note { color: var(--aicc-light); font-size:13px; margin-bottom: 14px; }
+
+  /* SVG container for the main architecture diagram */
+  .diagram-wrap {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+    border-radius: 12px;
+    padding: 8px;
+    overflow: auto;
+  }
+  svg.arch { width:100%; height:auto; display:block; }
+
+  /* ============ GRID SECTIONS ============ */
+  .row {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 1100px) { .row { grid-template-columns: 1fr; } }
+
+  .card {
+    background: linear-gradient(180deg, #13315C 0%, #0F2749 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 20px 22px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .card h3 {
+    font-size: 16px; font-weight: 700; color: var(--aicc-white);
+    margin-bottom: 8px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .tag {
+    display:inline-block; font-size:11px; letter-spacing:0.6px; text-transform:uppercase;
+    padding: 3px 8px; border-radius: 999px;
+    background: rgba(62,124,177,0.18); color: #BCD3EA;
+    border: 1px solid rgba(62,124,177,0.35);
+    margin-bottom: 10px;
+  }
+  .card p, .card li { color: #D6E2F0; font-size:14px; }
+  .card ul { padding-left: 18px; margin-top: 6px; }
+  .card li { margin: 4px 0; }
+
+  /* Input list */
+  .input-grid {
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .input-chip {
+    background: rgba(79,179,232,0.08);
+    border: 1px solid rgba(79,179,232,0.35);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .input-chip .name { font-weight:700; color:#CFE6F7; font-size:13px; }
+  .input-chip .meta { font-size:12px; color: var(--aicc-light); margin-top:2px; }
+
+  /* Sources table */
+  table.src {
+    width:100%; border-collapse:collapse; margin-top: 6px;
+    font-size: 13px; color:#D6E2F0;
+  }
+  table.src th, table.src td {
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+    text-align:left; vertical-align: top;
+  }
+  table.src th {
+    font-size:11px; letter-spacing:0.6px; text-transform:uppercase;
+    color: var(--aicc-light); font-weight:600;
+  }
+  table.src td.src-domain { color:#BCD3EA; font-weight:600; white-space:nowrap; }
+  table.src tr:last-child td { border-bottom:none; }
+
+  /* Decision engine example box */
+  .engine-grid {
+    display:grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  @media (max-width: 900px) { .engine-grid { grid-template-columns: 1fr; } }
+  .code-block {
+    background: #081A31;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'Consolas', 'Monaco', ui-monospace, monospace;
+    font-size: 12.5px;
+    color: #CFE6F7;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+  .code-block .kw { color:#F0B429; }
+  .code-block .str { color:#86EFAC; }
+  .code-block .num { color:#FBA5A5; }
+  .code-block .cmt { color:#8DA9C4; font-style: italic; }
+  .code-block .fn { color:#A78BFA; }
+
+  /* Dispatch output cards */
+  .dispatch-list { display:flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+  .dispatch-card {
+    border-radius: 10px; padding: 14px 16px;
+    background: linear-gradient(180deg, rgba(52,211,153,0.08), rgba(52,211,153,0.03));
+    border: 1px solid rgba(52,211,153,0.35);
+  }
+  .dispatch-card.warn {
+    background: linear-gradient(180deg, rgba(240,180,41,0.10), rgba(240,180,41,0.03));
+    border-color: rgba(240,180,41,0.45);
+  }
+  .dispatch-card.crit {
+    background: linear-gradient(180deg, rgba(248,113,113,0.10), rgba(248,113,113,0.03));
+    border-color: rgba(248,113,113,0.45);
+  }
+  .dispatch-head {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:8px;
+  }
+  .dispatch-head .title { font-weight:700; font-size:14px; color:#ffffff; }
+  .badge {
+    font-size:11px; padding:3px 8px; border-radius:999px;
+    background: rgba(255,255,255,0.1); color:#D6E2F0;
+    border:1px solid rgba(255,255,255,0.15);
+    letter-spacing:0.4px; text-transform:uppercase; font-weight:700;
+  }
+  .badge.green { background: rgba(52,211,153,0.18); border-color: rgba(52,211,153,0.4); color:#A7F3D0; }
+  .badge.amber { background: rgba(240,180,41,0.18); border-color: rgba(240,180,41,0.45); color:#FDE68A; }
+  .badge.red   { background: rgba(248,113,113,0.18); border-color: rgba(248,113,113,0.45); color:#FECACA; }
+  .dispatch-body { font-size:13px; color:#D6E2F0; }
+  .dispatch-meta {
+    margin-top:8px; display:flex; flex-wrap:wrap; gap: 6px 14px;
+    font-size:12px; color: var(--aicc-light);
+  }
+  .kv { color:#BCD3EA; }
+  .kv b { color:#FFFFFF; font-weight:700; }
+
+  /* Footer */
+  footer {
+    text-align:center; color: var(--aicc-light); font-size:12px;
+    margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border);
+  }
+  footer b { color:#BCD3EA; }
+
+  /* Print */
+  @media print {
+    body { background: #0B2545 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .panel, .card, header.masthead { box-shadow: none; }
+  }
+
+  /* Unified Evidence-Dossier Footer */
+  .aicc-footer {
+    max-width: 1400px; margin: 40px auto 0;
+    padding: 36px 32px 48px;
+    border-top: 1px solid rgba(255,255,255,0.10);
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 28px;
+    font-family: 'Calibri', 'Segoe UI', 'Helvetica Neue', Arial, system-ui, sans-serif;
+    font-size: 12.5px; color: #8DA9C4; line-height: 1.6;
+  }
+  @media (max-width: 900px) { .aicc-footer { grid-template-columns: 1fr; } }
+  .aicc-footer .col h5 {
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #BCD3EA; font-weight: 700; margin-bottom: 10px;
+  }
+  .aicc-footer .brand-col { display: flex; flex-direction: column; gap: 12px; }
+  .aicc-footer .brand-col .logo-wrap {
+    background: #FFFFFF; border-radius: 10px; padding: 12px 16px;
+    display: inline-block; max-width: 280px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+  .aicc-footer .brand-col .logo-wrap img { height: 42px; width: auto; display: block; }
+  .aicc-footer .byline { color: #BCD3EA; font-style: italic; font-size: 12.5px; max-width: 340px; }
+  .aicc-footer .legal { color: #5A7CA0; font-size: 10.5px; letter-spacing: 0.06em; }
+  .aicc-footer p { margin-bottom: 6px; }
+  .aicc-footer a { color: #4FB3E8; text-decoration: none; }
+  .aicc-footer a:hover { color: #8DBFE0; text-decoration: underline; }
+  .aicc-footer .mono { font-family: 'Consolas', 'SF Mono', 'Monaco', 'Courier New', ui-monospace, monospace; font-size: 11.5px; color: #BCD3EA; }
+  .aicc-footer strong.name { color: #EAF1FA; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ============== HEADER ============== -->
+  <header class="masthead">
+    <div class="brand">
+      <div class="brand-mark">AI</div>
+      <div>
+        <h1>AICrowdCare — POC End-to-End Architecture</h1>
+        <div class="subtitle">Inputs → Data Sources → Fusion Layer → AI Decision Engine → Dispatch Outputs. Reference architecture for the Calgary Stampede proof-of-concept.</div>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="swatch" style="background:var(--cat-input);"></div>Inputs (live signal streams)</div>
+      <div class="legend-item"><div class="swatch" style="background:var(--cat-source);"></div>External Data Sources</div>
+      <div class="legend-item"><div class="swatch" style="background:var(--cat-fusion);"></div>Fusion Layer</div>
+      <div class="legend-item"><div class="swatch" style="background:var(--cat-ai);"></div>AI Decision Engine</div>
+      <div class="legend-item"><div class="swatch" style="background:var(--cat-dispatch);"></div>Dispatch Outputs</div>
+    </div>
+  </header>
+
+  <!-- ============== MAIN ARCHITECTURE DIAGRAM (SVG) ============== -->
+  <section class="panel">
+    <div class="panel-title"><span class="bar"></span>Unified POC Architecture — Signal Flow</div>
+    <div class="panel-note">Left → right flow: field inputs and external sources feed the Fusion Layer, which normalizes and correlates signals into a unified event-state; the AI Decision Engine classifies, predicts, and prioritizes; the Dispatch Layer emits routed, role-specific outputs.</div>
+
+    <div class="diagram-wrap">
+<svg class="arch" viewBox="0 0 1560 820" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AICrowdCare POC architecture diagram">
+  <defs>
+    <!-- Gradients for column headers -->
+    <linearGradient id="gInput" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4FB3E8" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#1E3A6F" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="gSource" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F87171" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#1E3A6F" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="gFusion" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F0B429" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#1E3A6F" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="gAI" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#1E3A6F" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="gDispatch" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34D399" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#1E3A6F" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <!-- Box styles -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Arrowheads -->
+    <marker id="arrInput" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4FB3E8"/>
+    </marker>
+    <marker id="arrSource" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#F87171"/>
+    </marker>
+    <marker id="arrFusion" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#F0B429"/>
+    </marker>
+    <marker id="arrAI" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#A78BFA"/>
+    </marker>
+    <marker id="arrDispatch" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#34D399"/>
+    </marker>
+  </defs>
+
+  <!-- Background grid of column headers -->
+  <!-- Column 1: INPUTS -->
+  <rect x="20" y="20" width="260" height="42" rx="10" fill="url(#gInput)" stroke="rgba(255,255,255,0.18)"/>
+  <text x="150" y="46" text-anchor="middle" fill="#fff" font-size="15" font-weight="700" font-family="Calibri,Segoe UI,Arial,sans-serif">1 · INPUTS (Field Signals)</text>
+
+  <!-- Column 2: SOURCES -->
+  <rect x="300" y="20" width="260" height="42" rx="10" fill="url(#gSource)" stroke="rgba(255,255,255,0.18)"/>
+  <text x="430" y="46" text-anchor="middle" fill="#fff" font-size="15" font-weight="700" font-family="Calibri,Segoe UI,Arial,sans-serif">2 · EXTERNAL DATA SOURCES</text>
+
+  <!-- Column 3: FUSION -->
+  <rect x="580" y="20" width="260" height="42" rx="10" fill="url(#gFusion)" stroke="rgba(255,255,255,0.18)"/>
+  <text x="710" y="46" text-anchor="middle" fill="#fff" font-size="15" font-weight="700" font-family="Calibri,Segoe UI,Arial,sans-serif">3 · FUSION LAYER</text>
+
+  <!-- Column 4: AI -->
+  <rect x="860" y="20" width="260" height="42" rx="10" fill="url(#gAI)" stroke="rgba(255,255,255,0.18)"/>
+  <text x="990" y="46" text-anchor="middle" fill="#fff" font-size="15" font-weight="700" font-family="Calibri,Segoe UI,Arial,sans-serif">4 · AI DECISION ENGINE</text>
+
+  <!-- Column 5: DISPATCH -->
+  <rect x="1140" y="20" width="400" height="42" rx="10" fill="url(#gDispatch)" stroke="rgba(255,255,255,0.18)"/>
+  <text x="1340" y="46" text-anchor="middle" fill="#fff" font-size="15" font-weight="700" font-family="Calibri,Segoe UI,Arial,sans-serif">5 · DISPATCH OUTPUTS</text>
+
+  <!-- ===== INPUT BOXES (Column 1) ===== -->
+  <g font-family="Calibri,Segoe UI,Arial,sans-serif" filter="url(#softShadow)">
+    <!-- 1. BLE/Wi-Fi density -->
+    <rect x="20" y="85"  width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="108" fill="#CFE6F7" font-size="13" font-weight="700">BLE / Wi-Fi Density</text>
+    <text x="34" y="128" fill="#8DA9C4" font-size="12">Anonymous MAC vectors · 1-sec ticks</text>
+
+    <!-- 2. GPS mobile -->
+    <rect x="20" y="148" width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="171" fill="#CFE6F7" font-size="13" font-weight="700">GPS (Attendee + Asset)</text>
+    <text x="34" y="191" fill="#8DA9C4" font-size="12">Position + velocity + heading</text>
+
+    <!-- 3. Camera CV -->
+    <rect x="20" y="211" width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="234" fill="#CFE6F7" font-size="13" font-weight="700">CCTV / Computer Vision</text>
+    <text x="34" y="254" fill="#8DA9C4" font-size="12">Crowd flow vectors · density map</text>
+
+    <!-- 4. Triage intake -->
+    <rect x="20" y="274" width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="297" fill="#CFE6F7" font-size="13" font-weight="700">Cascading Triage Intake</text>
+    <text x="34" y="317" fill="#8DA9C4" font-size="12">Responder &amp; attendee app reports</text>
+
+    <!-- 5. Environmental sensors -->
+    <rect x="20" y="337" width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="360" fill="#CFE6F7" font-size="13" font-weight="700">Environmental Sensors</text>
+    <text x="34" y="380" fill="#8DA9C4" font-size="12">Temp · humidity · noise · air quality</text>
+
+    <!-- 6. Vendor & POS -->
+    <rect x="20" y="400" width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="423" fill="#CFE6F7" font-size="13" font-weight="700">Vendor / POS Telemetry</text>
+    <text x="34" y="443" fill="#8DA9C4" font-size="12">Queue length · alcohol sales velocity</text>
+
+    <!-- 7. Gate / ticket -->
+    <rect x="20" y="463" width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="486" fill="#CFE6F7" font-size="13" font-weight="700">Gate &amp; Ticket Scans</text>
+    <text x="34" y="506" fill="#8DA9C4" font-size="12">Ingress/egress counts · zone entry</text>
+
+    <!-- 8. Transit feeds -->
+    <rect x="20" y="526" width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="549" fill="#CFE6F7" font-size="13" font-weight="700">Transit / Mobility APIs</text>
+    <text x="34" y="569" fill="#8DA9C4" font-size="12">Calgary Transit · rideshare surge</text>
+
+    <!-- 9. Social sentiment -->
+    <rect x="20" y="589" width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="612" fill="#CFE6F7" font-size="13" font-weight="700">Social / Sentiment Feeds</text>
+    <text x="34" y="632" fill="#8DA9C4" font-size="12">Geo-tagged posts · keyword spikes</text>
+
+    <!-- 10. Responder GPS -->
+    <rect x="20" y="652" width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="675" fill="#CFE6F7" font-size="13" font-weight="700">Responder &amp; Asset GPS</text>
+    <text x="34" y="695" fill="#8DA9C4" font-size="12">EMS, security, medic, supervisor</text>
+
+    <!-- 11. Historical LEMON -->
+    <rect x="20" y="715" width="260" height="56" rx="9" fill="#13315C" stroke="#4FB3E8" stroke-width="1.2"/>
+    <text x="34" y="738" fill="#CFE6F7" font-size="13" font-weight="700">LEMON Historical Dataset</text>
+    <text x="34" y="758" fill="#8DA9C4" font-size="12">2020-22 event telemetry baseline</text>
+  </g>
+
+  <!-- ===== SOURCE BOXES (Column 2) ===== -->
+  <g font-family="Calibri,Segoe UI,Arial,sans-serif" filter="url(#softShadow)">
+    <rect x="300" y="85"  width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="108" fill="#FECACA" font-size="13" font-weight="700">Environment Canada / NOAA</text>
+    <text x="314" y="128" fill="#8DA9C4" font-size="12">Weather · heat index thresholds</text>
+
+    <rect x="300" y="148" width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="171" fill="#FECACA" font-size="13" font-weight="700">StatsCan / Census Canada</text>
+    <text x="314" y="191" fill="#8DA9C4" font-size="12">Demographics by postal code / zone</text>
+
+    <rect x="300" y="211" width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="234" fill="#FECACA" font-size="13" font-weight="700">AHA / WHO / JAMA Research</text>
+    <text x="314" y="254" fill="#8DA9C4" font-size="12">Cardiac survival curves · triage norms</text>
+
+    <rect x="300" y="274" width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="297" fill="#FECACA" font-size="13" font-weight="700">FEMA / NIST / ICS-NIMS</text>
+    <text x="314" y="317" fill="#8DA9C4" font-size="12">Incident command protocols</text>
+
+    <rect x="300" y="337" width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="360" fill="#FECACA" font-size="13" font-weight="700">NFPA 101 / 1600</text>
+    <text x="314" y="380" fill="#8DA9C4" font-size="12">Crowd &amp; life-safety standards</text>
+
+    <rect x="300" y="400" width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="423" fill="#FECACA" font-size="13" font-weight="700">Historical Event Incident DB</text>
+    <text x="314" y="443" fill="#8DA9C4" font-size="12">Astroworld · Itaewon · Hillsborough</text>
+
+    <rect x="300" y="463" width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="486" fill="#FECACA" font-size="13" font-weight="700">Venue / Organizer APIs</text>
+    <text x="314" y="506" fill="#8DA9C4" font-size="12">Calgary Stampede ops · schedule</text>
+
+    <rect x="300" y="526" width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="549" fill="#FECACA" font-size="13" font-weight="700">Mapping &amp; Geospatial</text>
+    <text x="314" y="569" fill="#8DA9C4" font-size="12">OSM · venue CAD · floor plans</text>
+
+    <rect x="300" y="589" width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="612" fill="#FECACA" font-size="13" font-weight="700">Insurance &amp; Actuarial Data</text>
+    <text x="314" y="632" fill="#8DA9C4" font-size="12">Edison · reinsurer loss tables</text>
+
+    <rect x="300" y="652" width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="675" fill="#FECACA" font-size="13" font-weight="700">Public Health / EMS Systems</text>
+    <text x="314" y="695" fill="#8DA9C4" font-size="12">Alberta Health Services feeds</text>
+
+    <rect x="300" y="715" width="260" height="56" rx="9" fill="#13315C" stroke="#F87171" stroke-width="1.2"/>
+    <text x="314" y="738" fill="#FECACA" font-size="13" font-weight="700">City / Municipal Data Portals</text>
+    <text x="314" y="758" fill="#8DA9C4" font-size="12">Calgary Open Data · traffic · police</text>
+  </g>
+
+  <!-- ===== FUSION LAYER (Column 3) ===== -->
+  <g font-family="Calibri,Segoe UI,Arial,sans-serif" filter="url(#softShadow)">
+    <!-- Outer fusion container -->
+    <rect x="580" y="85" width="260" height="690" rx="14" fill="#0F2749" stroke="#F0B429" stroke-width="1.6" stroke-dasharray="0"/>
+
+    <text x="710" y="112" text-anchor="middle" fill="#FDE68A" font-size="14" font-weight="700">Normalize · Correlate · Contextualize</text>
+
+    <!-- Fusion components -->
+    <rect x="600" y="130" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(240,180,41,0.55)"/>
+    <text x="614" y="153" fill="#FDE68A" font-size="12.5" font-weight="700">Signal Normalization</text>
+    <text x="614" y="171" fill="#8DA9C4" font-size="11.5">Unit, timebase, coord alignment</text>
+
+    <rect x="600" y="200" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(240,180,41,0.55)"/>
+    <text x="614" y="223" fill="#FDE68A" font-size="12.5" font-weight="700">Entity Resolution</text>
+    <text x="614" y="241" fill="#8DA9C4" font-size="11.5">Zone / cohort / asset identity</text>
+
+    <rect x="600" y="270" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(240,180,41,0.55)"/>
+    <text x="614" y="293" fill="#FDE68A" font-size="12.5" font-weight="700">Spatial Grid (Geohash)</text>
+    <text x="614" y="311" fill="#8DA9C4" font-size="11.5">Tiled density &amp; flow vectors</text>
+
+    <rect x="600" y="340" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(240,180,41,0.55)"/>
+    <text x="614" y="363" fill="#FDE68A" font-size="12.5" font-weight="700">Temporal Alignment</text>
+    <text x="614" y="381" fill="#8DA9C4" font-size="11.5">Sliding windows · lag correction</text>
+
+    <rect x="600" y="410" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(240,180,41,0.55)"/>
+    <text x="614" y="433" fill="#FDE68A" font-size="12.5" font-weight="700">Privacy Vectorization</text>
+    <text x="614" y="451" fill="#8DA9C4" font-size="11.5">Anonymous vectors, no PII</text>
+
+    <rect x="600" y="480" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(240,180,41,0.55)"/>
+    <text x="614" y="503" fill="#FDE68A" font-size="12.5" font-weight="700">Context Enrichment</text>
+    <text x="614" y="521" fill="#8DA9C4" font-size="11.5">Weather, demo, schedule joins</text>
+
+    <rect x="600" y="550" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(240,180,41,0.55)"/>
+    <text x="614" y="573" fill="#FDE68A" font-size="12.5" font-weight="700">Anomaly Pre-Filter</text>
+    <text x="614" y="591" fill="#8DA9C4" font-size="11.5">Dedup, noise, jitter handling</text>
+
+    <rect x="600" y="620" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(240,180,41,0.55)"/>
+    <text x="614" y="643" fill="#FDE68A" font-size="12.5" font-weight="700">Unified Event-State Vector</text>
+    <text x="614" y="661" fill="#8DA9C4" font-size="11.5">Per-zone · per-tick snapshot</text>
+
+    <rect x="600" y="690" width="220" height="70" rx="8" fill="#0B2545" stroke="rgba(240,180,41,0.75)"/>
+    <text x="614" y="713" fill="#FDE68A" font-size="12.5" font-weight="700">Output → AI Engine</text>
+    <text x="614" y="731" fill="#8DA9C4" font-size="11.5">Structured, time-aligned,</text>
+    <text x="614" y="747" fill="#8DA9C4" font-size="11.5">context-enriched feature set</text>
+  </g>
+
+  <!-- ===== AI DECISION ENGINE (Column 4) ===== -->
+  <g font-family="Calibri,Segoe UI,Arial,sans-serif" filter="url(#softShadow)">
+    <rect x="860" y="85" width="260" height="690" rx="14" fill="#0F2749" stroke="#A78BFA" stroke-width="1.6"/>
+
+    <text x="990" y="112" text-anchor="middle" fill="#DDD6FE" font-size="14" font-weight="700">Classify · Predict · Prioritize</text>
+
+    <rect x="880" y="130" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(167,139,250,0.55)"/>
+    <text x="894" y="153" fill="#DDD6FE" font-size="12.5" font-weight="700">Crowd Density Predictor</text>
+    <text x="894" y="171" fill="#8DA9C4" font-size="11.5">T+1 → T+15 min forecast</text>
+
+    <rect x="880" y="200" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(167,139,250,0.55)"/>
+    <text x="894" y="223" fill="#DDD6FE" font-size="12.5" font-weight="700">Crush Risk Classifier</text>
+    <text x="894" y="241" fill="#8DA9C4" font-size="11.5">Density × flow × velocity</text>
+
+    <rect x="880" y="270" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(167,139,250,0.55)"/>
+    <text x="894" y="293" fill="#DDD6FE" font-size="12.5" font-weight="700">Medical Urgency Scorer</text>
+    <text x="894" y="311" fill="#8DA9C4" font-size="11.5">6-tier START/JumpSTART</text>
+
+    <rect x="880" y="340" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(167,139,250,0.55)"/>
+    <text x="894" y="363" fill="#DDD6FE" font-size="12.5" font-weight="700">Security Threat Model</text>
+    <text x="894" y="381" fill="#8DA9C4" font-size="11.5">Anomaly + behavior cues</text>
+
+    <rect x="880" y="410" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(167,139,250,0.55)"/>
+    <text x="894" y="433" fill="#DDD6FE" font-size="12.5" font-weight="700">Responder Routing Optimizer</text>
+    <text x="894" y="451" fill="#8DA9C4" font-size="11.5">Shortest feasible path · ETA</text>
+
+    <rect x="880" y="480" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(167,139,250,0.55)"/>
+    <text x="894" y="503" fill="#DDD6FE" font-size="12.5" font-weight="700">Resource Allocation LP</text>
+    <text x="894" y="521" fill="#8DA9C4" font-size="11.5">Staffing vs. forecast demand</text>
+
+    <rect x="880" y="550" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(167,139,250,0.55)"/>
+    <text x="894" y="573" fill="#DDD6FE" font-size="12.5" font-weight="700">Vendor Coupon / Diversion</text>
+    <text x="894" y="591" fill="#8DA9C4" font-size="11.5">Crowd-shaping incentives</text>
+
+    <rect x="880" y="620" width="220" height="58" rx="8" fill="#13315C" stroke="rgba(167,139,250,0.55)"/>
+    <text x="894" y="643" fill="#DDD6FE" font-size="12.5" font-weight="700">Audit &amp; Explainability Log</text>
+    <text x="894" y="661" fill="#8DA9C4" font-size="11.5">Time-stamped decisions</text>
+
+    <rect x="880" y="690" width="220" height="70" rx="8" fill="#0B2545" stroke="rgba(167,139,250,0.85)"/>
+    <text x="894" y="713" fill="#DDD6FE" font-size="12.5" font-weight="700">Decision Output</text>
+    <text x="894" y="731" fill="#8DA9C4" font-size="11.5">Ranked action set with</text>
+    <text x="894" y="747" fill="#8DA9C4" font-size="11.5">severity, ETA, and rationale</text>
+  </g>
+
+  <!-- ===== DISPATCH OUTPUTS (Column 5) ===== -->
+  <g font-family="Calibri,Segoe UI,Arial,sans-serif" filter="url(#softShadow)">
+    <rect x="1140" y="85" width="400" height="690" rx="14" fill="#0F2749" stroke="#34D399" stroke-width="1.6"/>
+
+    <text x="1340" y="112" text-anchor="middle" fill="#A7F3D0" font-size="14" font-weight="700">Role-Routed Outputs · ICS/NIMS Aligned</text>
+
+    <!-- 1 Operations dashboard -->
+    <rect x="1160" y="130" width="360" height="74" rx="10" fill="#13315C" stroke="rgba(52,211,153,0.55)"/>
+    <text x="1176" y="154" fill="#A7F3D0" font-size="13" font-weight="700">Operations Command Dashboard</text>
+    <text x="1176" y="174" fill="#D6E2F0" font-size="12">Heatmap, incident feed, predictive alerts,</text>
+    <text x="1176" y="191" fill="#D6E2F0" font-size="12">asset tracking, insurance-ready logs</text>
+
+    <!-- 2 EMS dispatch -->
+    <rect x="1160" y="216" width="360" height="74" rx="10" fill="#13315C" stroke="rgba(52,211,153,0.55)"/>
+    <text x="1176" y="240" fill="#A7F3D0" font-size="13" font-weight="700">EMS Dispatch Ticket</text>
+    <text x="1176" y="260" fill="#D6E2F0" font-size="12">Priority, location, cascading triage summary,</text>
+    <text x="1176" y="277" fill="#D6E2F0" font-size="12">assigned responder, ETA, nearest resource</text>
+
+    <!-- 3 Security dispatch -->
+    <rect x="1160" y="302" width="360" height="74" rx="10" fill="#13315C" stroke="rgba(52,211,153,0.55)"/>
+    <text x="1176" y="326" fill="#A7F3D0" font-size="13" font-weight="700">Security / Intervention Dispatch</text>
+    <text x="1176" y="346" fill="#D6E2F0" font-size="12">Zone, threat level, staging point,</text>
+    <text x="1176" y="363" fill="#D6E2F0" font-size="12">recommended team size &amp; intervention</text>
+
+    <!-- 4 Crowd shaping -->
+    <rect x="1160" y="388" width="360" height="74" rx="10" fill="#13315C" stroke="rgba(52,211,153,0.55)"/>
+    <text x="1176" y="412" fill="#A7F3D0" font-size="13" font-weight="700">Crowd-Shaping Actions</text>
+    <text x="1176" y="432" fill="#D6E2F0" font-size="12">Gate throttle, alternate route,</text>
+    <text x="1176" y="449" fill="#D6E2F0" font-size="12">vendor coupon push, wayfinding shift</text>
+
+    <!-- 5 Attendee mobile / AR -->
+    <rect x="1160" y="474" width="360" height="74" rx="10" fill="#13315C" stroke="rgba(52,211,153,0.55)"/>
+    <text x="1176" y="498" fill="#A7F3D0" font-size="13" font-weight="700">Attendee Mobile &amp; AR Wayfinding</text>
+    <text x="1176" y="518" fill="#D6E2F0" font-size="12">Geofenced alerts, evacuation routes,</text>
+    <text x="1176" y="535" fill="#D6E2F0" font-size="12">nearest aid station, turn-by-turn overlay</text>
+
+    <!-- 6 Public alert / PA -->
+    <rect x="1160" y="560" width="360" height="74" rx="10" fill="#13315C" stroke="rgba(52,211,153,0.55)"/>
+    <text x="1176" y="584" fill="#A7F3D0" font-size="13" font-weight="700">Public Address / Zonal Broadcast</text>
+    <text x="1176" y="604" fill="#D6E2F0" font-size="12">PA scripts, digital signage takeover,</text>
+    <text x="1176" y="621" fill="#D6E2F0" font-size="12">multilingual zone-targeted messaging</text>
+
+    <!-- 7 Compliance / Insurance log -->
+    <rect x="1160" y="646" width="360" height="74" rx="10" fill="#13315C" stroke="rgba(52,211,153,0.55)"/>
+    <text x="1176" y="670" fill="#A7F3D0" font-size="13" font-weight="700">Compliance &amp; Insurance Audit Log</text>
+    <text x="1176" y="690" fill="#D6E2F0" font-size="12">Immutable decision trail for underwriters,</text>
+    <text x="1176" y="707" fill="#D6E2F0" font-size="12">NFPA / ICS / ISO 27001 alignment</text>
+
+    <rect x="1160" y="732" width="360" height="28" rx="8" fill="#0B2545" stroke="rgba(52,211,153,0.8)"/>
+    <text x="1340" y="751" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="700">Target: measurable response-time reduction · fewer severe incidents</text>
+  </g>
+
+  <!-- ===== CONNECTOR ARROWS ===== -->
+  <!-- Inputs → Fusion (bundle via column midpoints) -->
+  <g stroke-width="1.3" fill="none" opacity="0.85">
+    <!-- From each Input box right edge (x=280) to Fusion left edge (x=580), routed through a small elbow -->
+    <path d="M280,113 C 430,113 430,180 580,180" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+    <path d="M280,176 C 430,176 430,230 580,230" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+    <path d="M280,239 C 430,239 430,300 580,300" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+    <path d="M280,302 C 430,302 430,370 580,370" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+    <path d="M280,365 C 430,365 430,440 580,440" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+    <path d="M280,428 C 430,428 430,510 580,510" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+    <path d="M280,491 C 430,491 430,580 580,580" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+    <path d="M280,554 C 430,554 430,650 580,650" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+    <path d="M280,617 C 430,617 430,700 580,700" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+    <path d="M280,680 C 430,680 430,720 580,720" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+    <path d="M280,743 C 430,743 430,745 580,745" stroke="#4FB3E8" marker-end="url(#arrInput)"/>
+  </g>
+
+  <!-- Sources → Fusion -->
+  <g stroke-width="1.3" fill="none" opacity="0.85">
+    <path d="M560,113 C 572,113 572,150 600,150" stroke="#F87171" marker-end="url(#arrSource)"/>
+    <path d="M560,176 C 572,176 572,220 600,220" stroke="#F87171" marker-end="url(#arrSource)"/>
+    <path d="M560,239 C 572,239 572,290 600,290" stroke="#F87171" marker-end="url(#arrSource)"/>
+    <path d="M560,302 C 572,302 572,360 600,360" stroke="#F87171" marker-end="url(#arrSource)"/>
+    <path d="M560,365 C 572,365 572,430 600,430" stroke="#F87171" marker-end="url(#arrSource)"/>
+    <path d="M560,428 C 572,428 572,500 600,500" stroke="#F87171" marker-end="url(#arrSource)"/>
+    <path d="M560,491 C 572,491 572,570 600,570" stroke="#F87171" marker-end="url(#arrSource)"/>
+    <path d="M560,554 C 572,554 572,640 600,640" stroke="#F87171" marker-end="url(#arrSource)"/>
+    <path d="M560,617 C 572,617 572,700 600,700" stroke="#F87171" marker-end="url(#arrSource)"/>
+    <path d="M560,680 C 572,680 572,740 600,740" stroke="#F87171" marker-end="url(#arrSource)"/>
+    <path d="M560,743 C 572,743 572,748 600,748" stroke="#F87171" marker-end="url(#arrSource)"/>
+  </g>
+
+  <!-- Fusion → AI (one thick bundled arrow from fusion output to AI top/mid) -->
+  <g stroke-width="2" fill="none">
+    <path d="M820,725 C 840,725 840,430 880,430" stroke="#F0B429" marker-end="url(#arrFusion)"/>
+    <path d="M820,660 C 848,660 848,280 880,280" stroke="#F0B429" marker-end="url(#arrFusion)" opacity="0.8"/>
+    <path d="M820,590 C 850,590 850,160 880,160" stroke="#F0B429" marker-end="url(#arrFusion)" opacity="0.6"/>
+  </g>
+
+  <!-- AI → Dispatch -->
+  <g stroke-width="2" fill="none">
+    <path d="M1100,725 C 1120,725 1120,167 1160,167" stroke="#A78BFA" marker-end="url(#arrAI)" opacity="0.6"/>
+    <path d="M1100,725 C 1120,725 1120,253 1160,253" stroke="#A78BFA" marker-end="url(#arrAI)" opacity="0.7"/>
+    <path d="M1100,725 C 1120,725 1120,339 1160,339" stroke="#A78BFA" marker-end="url(#arrAI)" opacity="0.8"/>
+    <path d="M1100,725 C 1120,725 1120,425 1160,425" stroke="#A78BFA" marker-end="url(#arrAI)" opacity="0.9"/>
+    <path d="M1100,725 C 1120,725 1120,511 1160,511" stroke="#A78BFA" marker-end="url(#arrAI)"/>
+    <path d="M1100,725 C 1120,725 1120,597 1160,597" stroke="#A78BFA" marker-end="url(#arrAI)" opacity="0.9"/>
+    <path d="M1100,725 C 1120,725 1120,683 1160,683" stroke="#A78BFA" marker-end="url(#arrAI)" opacity="0.8"/>
+  </g>
+
+  <!-- Closing flow label -->
+  <g font-family="Calibri,Segoe UI,Arial,sans-serif">
+    <rect x="20" y="790" width="1520" height="22" rx="6" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+    <text x="780" y="806" text-anchor="middle" fill="#8DA9C4" font-size="12">Feedback loop: dispatch outcomes and audit logs feed back into the LEMON historical dataset and model retraining pipelines.</text>
+  </g>
+</svg>
+    </div>
+  </section>
+
+  <!-- ============== INPUTS DETAIL ============== -->
+  <section class="panel">
+    <div class="panel-title"><span class="bar"></span>1 · Inputs — Live Signal Streams Feeding the POC</div>
+    <div class="panel-note">These are the signal streams ingested by the POC during the Calgary Stampede simulation. Each is time-aligned and anonymized at the edge before entering the Fusion Layer.</div>
+    <div class="input-grid">
+      <div class="input-chip"><div class="name">BLE / Wi-Fi Density</div><div class="meta">Anonymous MAC vectors sampled at 1-sec intervals; sub-meter resolution via triangulation.</div></div>
+      <div class="input-chip"><div class="name">GPS (Attendee + Asset)</div><div class="meta">Opted-in mobile GPS + tagged assets (stages, gates, vehicles). Position, velocity, heading.</div></div>
+      <div class="input-chip"><div class="name">CCTV / Computer Vision</div><div class="meta">Crowd flow vectors, queue formation, density hot-spots. No facial identification.</div></div>
+      <div class="input-chip"><div class="name">Cascading Triage Intake</div><div class="meta">Responder &amp; attendee app prompts (e.g., "conscious?") with dynamic branching.</div></div>
+      <div class="input-chip"><div class="name">Environmental Sensors</div><div class="meta">Temperature, humidity, noise, particulate. Feeds heat-index and crowd-stress logic.</div></div>
+      <div class="input-chip"><div class="name">Vendor / POS Telemetry</div><div class="meta">Queue lengths, alcohol sales velocity — correlated to medical risk uplift.</div></div>
+      <div class="input-chip"><div class="name">Gate &amp; Ticket Scans</div><div class="meta">Ingress/egress counts per zone; zone-entry permissions and capacity tracking.</div></div>
+      <div class="input-chip"><div class="name">Transit / Mobility APIs</div><div class="meta">Calgary Transit arrivals, rideshare surge, parking saturation.</div></div>
+      <div class="input-chip"><div class="name">Social / Sentiment Feeds</div><div class="meta">Geo-tagged posts and keyword spikes near the venue.</div></div>
+      <div class="input-chip"><div class="name">Responder &amp; Asset GPS</div><div class="meta">EMS, security, medics, supervisors — positions and status.</div></div>
+      <div class="input-chip"><div class="name">LEMON Historical Dataset</div><div class="meta">2020-22 event telemetry baseline used to calibrate predictors.</div></div>
+      <div class="input-chip"><div class="name">Organizer Ops Feed</div><div class="meta">Schedule, show-times, gate-open/close windows, VIP movements.</div></div>
+    </div>
+  </section>
+
+  <!-- ============== SOURCES DETAIL ============== -->
+  <section class="panel">
+    <div class="panel-title"><span class="bar"></span>2 · External Data Sources — Authoritative Feeds &amp; Standards</div>
+    <div class="panel-note">All inputs are enriched and validated against authoritative external sources. These feeds anchor the POC to actuarial, medical, regulatory, and civic ground-truth.</div>
+    <table class="src">
+      <thead><tr><th>Category</th><th>Source</th><th>Use in POC</th></tr></thead>
+      <tbody>
+        <tr><td class="src-domain">Weather</td><td>Environment &amp; Climate Change Canada · NOAA</td><td>Heat-index thresholds (&gt; 85°F) driving medical-demand uplift.</td></tr>
+        <tr><td class="src-domain">Demographics</td><td>Statistics Canada · Census</td><td>Age, density, ethnicity priors that shift cardiac / medical risk profiles (up to 5.9×).</td></tr>
+        <tr><td class="src-domain">Medical Standards</td><td>AHA · WHO · JAMA</td><td>Cardiac survival curves; START / JumpSTART triage logic; mass-gathering guidelines.</td></tr>
+        <tr><td class="src-domain">Incident Command</td><td>FEMA NIMS · NIST PSCR</td><td>Unified command protocols (NIMS 3rd ed., 2017) and NG911 / indoor-location research portfolio (NIST PSCR).</td></tr>
+        <tr><td class="src-domain">Life Safety</td><td>NFPA 101 · NFPA 1660:2024</td><td>Egress capacity, life-safety compliance, and consolidated emergency / continuity / crisis management baked into crush-risk thresholds.</td></tr>
+        <tr><td class="src-domain">Historical Incidents</td><td>Astroworld · Itaewon · Hillsborough · Love Parade</td><td>Failure-mode library used to train crush-risk classifiers.</td></tr>
+        <tr><td class="src-domain">Venue / Organizer</td><td>Calgary Stampede Ops APIs</td><td>Floor plans, gate schedules, show run-of-show, staffing rosters.</td></tr>
+        <tr><td class="src-domain">Geospatial</td><td>OpenStreetMap · Venue CAD</td><td>Navigable graphs for responder routing and AR wayfinding.</td></tr>
+        <tr><td class="src-domain">Insurance / Actuarial</td><td>Edison · Reinsurer Loss Tables</td><td>Premium-credit logic; severity-frequency adjustments.</td></tr>
+        <tr><td class="src-domain">Public Health / EMS</td><td>Alberta Health Services</td><td>EMS dispatch capacity, hospital availability, receiving protocols.</td></tr>
+        <tr><td class="src-domain">Civic Data</td><td>City of Calgary Open Data</td><td>Traffic, police incidents, transit, permits.</td></tr>
+        <tr><td class="src-domain">Research Benchmarks</td><td>McKinsey · BCG · Accenture</td><td>Productivity uplift baselines (20–30%) for ROI modeling.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============== FUSION LAYER DETAIL ============== -->
+  <section class="panel">
+    <div class="panel-title"><span class="bar"></span>3 · Fusion Layer — From Raw Signals to Unified Event-State</div>
+    <div class="panel-note">The Fusion Layer is the POC's core differentiator. It converts a heterogeneous firehose into a single, time-aligned, context-enriched event-state vector that the AI Decision Engine can act on.</div>
+    <div class="row" style="grid-template-columns: 1fr 1fr;">
+      <div class="card">
+        <span class="tag">Responsibilities</span>
+        <h3>What the Fusion Layer does</h3>
+        <ul>
+          <li><b>Normalize</b> units, timebases, and coordinate systems across every feed.</li>
+          <li><b>Resolve</b> entities — zones, cohorts, assets — into stable identifiers.</li>
+          <li><b>Grid</b> space via geohash tiles for density, flow, and velocity math.</li>
+          <li><b>Align</b> signals temporally with sliding windows and lag correction.</li>
+          <li><b>Vectorize</b> into anonymous feature vectors — no PII ever persisted.</li>
+          <li><b>Enrich</b> with weather, demographics, schedule, and historical priors.</li>
+          <li><b>Filter</b> noise, dedup, and jitter before model inference.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">Output contract</span>
+        <h3>Unified Event-State Vector</h3>
+        <p>For each zone and each tick, the Fusion Layer emits a structured vector the AI Engine consumes:</p>
+<div class="code-block" style="margin-top:10px;">{
+  <span class="str">"event_id"</span>: <span class="str">"stampede_2026_d3"</span>,
+  <span class="str">"zone"</span>: <span class="str">"GRANDSTAND_NE_B7"</span>,
+  <span class="str">"ts"</span>: <span class="str">"2026-07-05T20:42:15Z"</span>,
+  <span class="str">"density_ppsm"</span>: <span class="num">4.8</span>,          <span class="cmt">// people / m²</span>
+  <span class="str">"flow_vec"</span>: [<span class="num">-0.62</span>, <span class="num">0.31</span>],     <span class="cmt">// m/s, heading</span>
+  <span class="str">"heat_index_f"</span>: <span class="num">91</span>,
+  <span class="str">"demo_cardiac_mult"</span>: <span class="num">1.7</span>,
+  <span class="str">"alcohol_velocity_idx"</span>: <span class="num">0.82</span>,
+  <span class="str">"queue_len_m"</span>: <span class="num">28</span>,
+  <span class="str">"nearest_ems_m"</span>: <span class="num">140</span>,
+  <span class="str">"noise_db"</span>: <span class="num">96</span>,
+  <span class="str">"sentiment_delta_5m"</span>: <span class="num">-0.23</span>,
+  <span class="str">"historical_prior"</span>: <span class="str">"elevated"</span>
+}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== AI DECISION ENGINE EXAMPLE ============== -->
+  <section class="panel">
+    <div class="panel-title"><span class="bar"></span>4 · AI Decision Engine — Worked Example</div>
+    <div class="panel-note">The engine consumes the event-state vector above and produces a ranked action set with severity, ETA, and rationale. Below is a representative decision cycle at the Calgary Stampede — one zone, one tick.</div>
+    <div class="engine-grid">
+      <div class="card">
+        <span class="tag">Input · Event-state vector</span>
+        <h3>Zone: Grandstand NE · B7 · 20:42:15</h3>
+<div class="code-block">density_ppsm       = <span class="num">4.8</span>   <span class="cmt">// crush threshold: 5.0</span>
+flow_vec_mag       = <span class="num">0.69</span>  <span class="cmt">// m/s — slowing</span>
+heat_index_f       = <span class="num">91</span>    <span class="cmt">// above 85° risk band</span>
+demo_cardiac_mult  = <span class="num">1.7</span>
+alcohol_vel_idx    = <span class="num">0.82</span>
+noise_db           = <span class="num">96</span>
+nearest_ems_m      = <span class="num">140</span>
+historical_prior   = <span class="str">"elevated"</span></div>
+        <p style="margin-top:10px;">Thresholds from NFPA / AHA / NIST source feeds trigger a cascade of model scores.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag">Engine · Model cascade</span>
+        <h3>Parallel model inference</h3>
+<div class="code-block"><span class="fn">crush_risk</span>        = <span class="num">0.71</span>  <span class="cmt">// HIGH — forecast T+6 min</span>
+<span class="fn">medical_urgency</span>   = <span class="num">0.58</span>  <span class="cmt">// MED — heat + demo uplift</span>
+<span class="fn">security_threat</span>   = <span class="num">0.22</span>  <span class="cmt">// LOW</span>
+<span class="fn">divert_benefit</span>    = <span class="num">0.67</span>  <span class="cmt">// HIGH</span>
+<span class="fn">ems_eta_optimized</span> = <span class="num">2.4</span>   <span class="cmt">// min vs 5.8 baseline</span>
+<span class="fn">route</span>             = <span class="str">"corridor_B7→B5→aid_3"</span></div>
+        <p style="margin-top:10px;">The optimizer outputs a ranked action set with explainable rationale for the audit log.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <span class="tag">Output · Ranked action set with rationale</span>
+      <h3>What the engine emits to the Dispatch Layer</h3>
+<div class="code-block">{
+  <span class="str">"zone"</span>: <span class="str">"GRANDSTAND_NE_B7"</span>, <span class="str">"ts"</span>: <span class="str">"2026-07-05T20:42:15Z"</span>,
+  <span class="str">"actions"</span>: [
+    {
+      <span class="str">"rank"</span>: <span class="num">1</span>,
+      <span class="str">"type"</span>: <span class="str">"CROWD_DIVERT"</span>,
+      <span class="str">"severity"</span>: <span class="str">"HIGH"</span>,
+      <span class="str">"reason"</span>: <span class="str">"density 4.8 / flow slowing / T+6 crush risk 0.71"</span>,
+      <span class="str">"targets"</span>: [<span class="str">"gate_B7_throttle"</span>, <span class="str">"AR_reroute_B7→B5"</span>, <span class="str">"coupon_push_vendor_V12"</span>],
+      <span class="str">"eta_min"</span>: <span class="num">1.2</span>
+    },
+    {
+      <span class="str">"rank"</span>: <span class="num">2</span>,
+      <span class="str">"type"</span>: <span class="str">"EMS_PRE_POSITION"</span>,
+      <span class="str">"severity"</span>: <span class="str">"MED"</span>,
+      <span class="str">"reason"</span>: <span class="str">"heat 91°F + cardiac demo mult 1.7 + noise 96dB"</span>,
+      <span class="str">"targets"</span>: [<span class="str">"EMS_unit_7"</span>, <span class="str">"aid_station_3"</span>],
+      <span class="str">"eta_min"</span>: <span class="num">2.4</span>
+    },
+    {
+      <span class="str">"rank"</span>: <span class="num">3</span>,
+      <span class="str">"type"</span>: <span class="str">"PA_ADVISORY"</span>,
+      <span class="str">"severity"</span>: <span class="str">"INFO"</span>,
+      <span class="str">"reason"</span>: <span class="str">"hydration + alt route messaging — zone B7"</span>,
+      <span class="str">"targets"</span>: [<span class="str">"PA_zone_B7"</span>, <span class="str">"signage_B7_north"</span>],
+      <span class="str">"eta_min"</span>: <span class="num">0.3</span>
+    }
+  ],
+  <span class="str">"audit_id"</span>: <span class="str">"dec_2026_07_05_2042_B7_0001"</span>
+}</div>
+    </div>
+  </section>
+
+  <!-- ============== DISPATCH OUTPUTS EXAMPLES ============== -->
+  <section class="panel">
+    <div class="panel-title"><span class="bar"></span>5 · Dispatch Outputs — Role-Routed Examples</div>
+    <div class="panel-note">The same decision cycle fans out into role-specific dispatches. Each is ICS/NIMS-aligned and logged for the compliance &amp; insurance audit trail.</div>
+
+    <div class="row" style="grid-template-columns: 1fr 1fr;">
+
+      <div class="card">
+        <span class="tag">Output A · Operations Command</span>
+        <h3>Command Dashboard Alert</h3>
+        <div class="dispatch-list">
+          <div class="dispatch-card crit">
+            <div class="dispatch-head">
+              <div class="title">HIGH · Crush Risk Forecast — Grandstand NE · B7</div>
+              <div class="badge red">P1</div>
+            </div>
+            <div class="dispatch-body">Density 4.8 p/m². Flow decelerating. T+6 crush probability 0.71. Auto-diversion queued; throttling gate B7. Awaiting IC acknowledgement.</div>
+            <div class="dispatch-meta">
+              <span class="kv"><b>Zone</b> GRANDSTAND_NE_B7</span>
+              <span class="kv"><b>T+</b> 6 min</span>
+              <span class="kv"><b>Audit</b> dec_…_B7_0001</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="tag">Output B · EMS</span>
+        <h3>EMS Dispatch Ticket</h3>
+        <div class="dispatch-list">
+          <div class="dispatch-card warn">
+            <div class="dispatch-head">
+              <div class="title">EMS-7 · Pre-Position to Aid Station 3</div>
+              <div class="badge amber">MED</div>
+            </div>
+            <div class="dispatch-body">Heat index 91°F. Cardiac demo multiplier 1.7. Noise 96dB reducing bystander detection. ETA optimized 2.4 min (baseline 5.8).</div>
+            <div class="dispatch-meta">
+              <span class="kv"><b>Unit</b> EMS-7</span>
+              <span class="kv"><b>Route</b> B7→B5→aid_3</span>
+              <span class="kv"><b>ETA</b> 2.4 min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="tag">Output C · Security</span>
+        <h3>Security / Intervention Dispatch</h3>
+        <div class="dispatch-list">
+          <div class="dispatch-card">
+            <div class="dispatch-head">
+              <div class="title">SEC-12 · Stage at B7 North Throttle Point</div>
+              <div class="badge green">LOW</div>
+            </div>
+            <div class="dispatch-body">Threat score 0.22 — monitoring. Support crowd diversion; verify throttle compliance at gate B7. No escalation unless density &gt; 5.0.</div>
+            <div class="dispatch-meta">
+              <span class="kv"><b>Team</b> 3 pax</span>
+              <span class="kv"><b>Zone</b> B7 North</span>
+              <span class="kv"><b>Role</b> Throttle support</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="tag">Output D · Crowd Shaping</span>
+        <h3>Vendor Coupon &amp; Reroute Push</h3>
+        <div class="dispatch-list">
+          <div class="dispatch-card">
+            <div class="dispatch-head">
+              <div class="title">Vendor V12 · 20% coupon to 800 devices in B7</div>
+              <div class="badge green">OK</div>
+            </div>
+            <div class="dispatch-body">Geofenced push to anonymous cohort in B7 to incentivize movement toward vendor cluster V12 (B5), relieving grandstand pressure.</div>
+            <div class="dispatch-meta">
+              <span class="kv"><b>Vendor</b> V12</span>
+              <span class="kv"><b>Cohort</b> ~800</span>
+              <span class="kv"><b>Expected flow Δ</b> +0.4 m/s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="tag">Output E · Attendee Mobile / AR</span>
+        <h3>Attendee AR Wayfinding Overlay</h3>
+        <div class="dispatch-list">
+          <div class="dispatch-card">
+            <div class="dispatch-head">
+              <div class="title">Reroute: B7 → B5 via Corridor 4</div>
+              <div class="badge green">INFO</div>
+            </div>
+            <div class="dispatch-body">AR overlay redirects attendees away from congested grandstand. Turn-by-turn guidance surfaces nearest aid station and water point.</div>
+            <div class="dispatch-meta">
+              <span class="kv"><b>Users</b> opted-in in B7</span>
+              <span class="kv"><b>Distance Δ</b> +80m</span>
+              <span class="kv"><b>Safety score</b> +2 tiers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="tag">Output F · Compliance / Insurance</span>
+        <h3>Audit Log Entry</h3>
+        <div class="dispatch-list">
+          <div class="dispatch-card">
+            <div class="dispatch-head">
+              <div class="title">Immutable decision trail · dec_2026_07_05_2042_B7_0001</div>
+              <div class="badge green">LOGGED</div>
+            </div>
+            <div class="dispatch-body">All inputs, model scores, routing choices, and role dispatches time-stamped and signed. Packaged for NFPA / ICS / ISO 27001 review and underwriter premium-credit evaluation.</div>
+            <div class="dispatch-meta">
+              <span class="kv"><b>Records</b> 14 signals · 4 models · 6 dispatches</span>
+              <span class="kv"><b>Retention</b> 7 yrs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="aicc-footer">
+  <div class="col brand-col">
+    <div class="logo-wrap"><img src="data:image/png;base64,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" alt="AICrowdCare"></div>
+    <div class="byline"><strong class="name">AICrowdCare Inc.</strong><br>We use AI to process Location Data and Model Ground Truth in Near Real-time so You can Manage Crowds Efficiently.</div>
+    <div class="legal">© 2026 AICrowdCare Inc. · All rights reserved · Toronto, ON, Canada</div>
+  </div>
+  <div class="col">
+    <h5>Leadership</h5>
+    <p><strong class="name">James Rodmell</strong><br>Founder &amp; CEO</p>
+    <p><strong class="name">Stewart Doma</strong><br>Co-founder &amp; CFO</p>
+    <p><strong class="name">Dr. Julian Yeomans</strong><br>Chief Scientist · York · Schulich</p>
+  </div>
+  <div class="col">
+    <h5>Contact</h5>
+    <p class="mono"><a href="mailto:info@aicrowdcare.com">info@aicrowdcare.com</a></p>
+    <p class="mono"><a href="https://www.aicrowdcare.com" target="_blank" rel="noopener">www.aicrowdcare.com</a></p>
+    <p style="margin-top:10px;"><strong class="name">Toronto, ON, Canada</strong><br>Global offices Q4 2026:<br>New York · Johannesburg<br>London · Eastern Europe</p>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

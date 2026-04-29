@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<!-- AICrowdCare POC · Calgary Stampede · Re-skinned in AICC dark-blue palette -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AICrowdCare · Calgary Stampede POC · July 12, 2025</title>
+<style>
+:root {
+  /* AICC dark-blue palette — matched to the master architecture diagram */
+  --bg-void:         #081A31;
+  --bg-ink:          #0B2545;
+  --bg-panel:        #0F2749;
+  --bg-panel-2:      #13315C;
+  --line:            rgba(255,255,255,0.10);
+  --line-hot:        rgba(255,255,255,0.22);
+  --text:            #EAF1FA;
+  --text-dim:        #BCD3EA;
+  --text-faint:      #8DA9C4;
+
+  /* Brand accent — AICC dark-blue accent replaces the old Stampede red */
+  --stampede-red:       #3E7CB1;    /* var name kept for compatibility; now AICC accent blue */
+  --stampede-red-glow:  rgba(62,124,177,0.35);
+
+  /* Signal colors — aligned with master diagram */
+  --ems-amber:       #F0B429;      /* amber — EMS / fusion */
+  --security-cyan:   #4FB3E8;      /* cyan — security / inputs */
+  --success:         #34D399;      /* green — dispatch success */
+  --warn:            #F0B429;      /* amber warning */
+  --crit:            #FF6B6B;      /* red — reserved for genuine criticals */
+
+  /* Fonts — Calibri first (AICC brand), sans-serif stack throughout */
+  --serif:  'Calibri', 'Segoe UI', 'Helvetica Neue', Arial, system-ui, -apple-system, sans-serif;
+  --mono:   'Consolas', 'SF Mono', 'Monaco', 'Courier New', ui-monospace, monospace;
+  --sans:   'Calibri', 'Segoe UI', 'Helvetica Neue', Arial, system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+body {
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(62,124,177,0.22), transparent 60%),
+    radial-gradient(1000px 500px at 110% 10%, rgba(141,169,196,0.10), transparent 60%),
+    linear-gradient(180deg, #0B2545 0%, #0A1F3A 60%, #081A31 100%);
+  min-height: 100vh;
+}
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(62,124,177,0.10) 0%, transparent 50%),
+    radial-gradient(circle at 85% 90%, rgba(141,169,196,0.06) 0%, transparent 50%);
+}
+body::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 2;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  opacity: 0.025; mix-blend-mode: overlay;
+}
+
+/* ============ TOP BAND ============ */
+.top-band {
+  position: relative; z-index: 10;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(30,58,111,0.55) 0%, rgba(11,37,69,0.75) 100%);
+}
+.top-inner { max-width: 1680px; margin: 0 auto; padding: 18px 32px; display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; }
+.brand { display: flex; align-items: baseline; gap: 14px; }
+.brand-mark {
+  font-family: var(--serif); font-weight: 900; font-size: 30px; letter-spacing: -0.02em; line-height: 1;
+  color: var(--text);
+}
+.brand-mark em { font-style: italic; color: var(--stampede-red); font-weight: 500; }
+.brand-sub { font-family: var(--mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 2px; }
+.top-meta { display: flex; gap: 28px; align-items: baseline; }
+.meta-item { display: flex; flex-direction: column; gap: 3px; }
+.meta-label { font-family: var(--mono); font-size: 9px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.18em; }
+.meta-value { font-family: var(--mono); font-size: 13px; color: var(--text); font-weight: 500; }
+.meta-value.live::before {
+  content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--success); margin-right: 8px; vertical-align: middle;
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+@keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+
+/* ============ INVESTOR PREAMBLE ============ */
+.preamble {
+  position: relative; z-index: 5;
+  max-width: 1680px; margin: 0 auto; padding: 48px 32px 32px;
+  display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: end;
+  border-bottom: 1px solid var(--line);
+}
+.preamble-headline {
+  font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 3.6vw, 54px);
+  line-height: 1.05; letter-spacing: -0.015em; color: var(--text);
+}
+.preamble-headline em {
+  font-style: italic; color: var(--stampede-red); font-weight: 500;
+}
+.preamble-headline .divider {
+  display: block; width: 60px; height: 1px; background: var(--stampede-red);
+  margin: 22px 0;
+}
+.preamble-copy { font-size: 14px; color: var(--text-dim); line-height: 1.65; max-width: 460px; }
+.preamble-copy strong { color: var(--text); font-weight: 500; }
+.stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 32px; border-top: 1px solid var(--line); }
+.stat {
+  padding: 18px 20px 16px; border-right: 1px solid var(--line);
+  background: rgba(255,255,255,0.01);
+}
+.stat:last-child { border-right: none; }
+.stat-num { font-family: var(--serif); font-weight: 500; font-size: 30px; line-height: 1; color: var(--text); letter-spacing: -0.01em; }
+.stat-num.red { color: var(--stampede-red); }
+.stat-num em { font-style: italic; font-size: 18px; color: var(--text-dim); font-weight: 400; margin-left: 4px; }
+.stat-lbl { font-family: var(--mono); font-size: 9px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.18em; margin-top: 8px; }
+
+/* ============ MAIN GRID ============ */
+.simulation {
+  position: relative; z-index: 5;
+  max-width: 1680px; margin: 0 auto; padding: 32px;
+  display: grid; grid-template-columns: 320px 1fr 340px; gap: 20px;
+  min-height: 780px;
+}
+
+/* ============ LEFT RAIL: CONTROLS ============ */
+.panel {
+  background: linear-gradient(180deg, rgba(30,58,111,0.55) 0%, rgba(15,39,73,0.7) 100%);
+  border: 1px solid var(--line);
+  border-radius: 14px; position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+.panel-h {
+  padding: 14px 18px 12px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-t { font-family: var(--mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.2em; }
+.panel-tag { font-family: var(--mono); font-size: 9px; color: var(--text-faint); padding: 2px 6px; border: 1px solid var(--line-hot); }
+.panel-body { padding: 18px; }
+
+.time-label { font-family: var(--mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 6px; }
+.time-display {
+  font-family: var(--serif); font-weight: 300; font-size: 56px; line-height: 1;
+  color: var(--text); letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+}
+.time-display em { font-style: italic; font-size: 20px; color: var(--stampede-red); vertical-align: super; font-weight: 400; margin-left: 4px; }
+.time-sub { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+
+.slider-wrap { margin-top: 20px; }
+.slider {
+  -webkit-appearance: none; width: 100%; height: 4px; background: var(--bg-panel-2);
+  border: 1px solid var(--line); outline: none; cursor: pointer;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 22px; background: var(--stampede-red);
+  border: 1px solid var(--bg-void); cursor: grab;
+}
+.slider::-moz-range-thumb {
+  width: 14px; height: 22px; background: var(--stampede-red); border: 1px solid var(--bg-void); cursor: grab;
+}
+.slider-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+.slider-labels span { font-family: var(--mono); font-size: 9px; color: var(--text-faint); letter-spacing: 0.1em; }
+
+.control-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+.btn {
+  font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em;
+  padding: 10px 12px; border: 1px solid var(--line-hot); background: transparent; color: var(--text-dim);
+  cursor: pointer; transition: all 0.2s ease; text-align: center;
+}
+.btn:hover { border-color: var(--text); color: var(--text); }
+.btn.primary {
+  background: var(--stampede-red); border-color: var(--stampede-red); color: #fff;
+  font-weight: 700;
+}
+.btn.primary:hover { background: #4A8FC7; box-shadow: 0 0 24px var(--stampede-red-glow); }
+.btn.full { grid-column: 1 / -1; }
+.btn.danger { border-color: var(--crit); color: var(--crit); }
+.btn.danger:hover { background: var(--crit); color: #fff; border-color: var(--crit); }
+
+.layer-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid var(--line);
+  font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer;
+}
+.layer-toggle:last-child { border-bottom: none; }
+.layer-toggle:hover { color: var(--text); }
+.layer-toggle .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; vertical-align: middle; }
+.dot.crowd { background: var(--stampede-red); box-shadow: 0 0 8px var(--stampede-red); }
+.dot.ems { background: var(--ems-amber); box-shadow: 0 0 8px rgba(244,161,43,0.6); }
+.dot.sec { background: var(--security-cyan); box-shadow: 0 0 8px rgba(69,209,197,0.5); }
+.dot.sent { background: #a88cff; box-shadow: 0 0 8px rgba(168,140,255,0.5); }
+.dot.wx { background: #6bb8ff; box-shadow: 0 0 8px rgba(107,184,255,0.5); }
+.dot.alc { background: #e0a065; box-shadow: 0 0 8px rgba(224,160,101,0.5); }
+.layer-toggle .state { font-size: 9px; letter-spacing: 0.18em; color: var(--text-faint); }
+.layer-toggle.active .state { color: var(--success); }
+.layer-toggle.active { color: var(--text); }
+
+/* ============ CENTER: MAP ============ */
+.map-stage { position: relative; background: #0A1F3A; border: 1px solid var(--line); border-radius: 14px; min-height: 780px; overflow: hidden; }
+.map-overlay-top {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+  padding: 14px 20px; border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(11,37,69,0.95) 0%, rgba(11,37,69,0.7) 100%);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.map-title { display: flex; align-items: baseline; gap: 14px; }
+.map-title h3 { font-family: var(--serif); font-weight: 500; font-size: 18px; color: var(--text); letter-spacing: -0.01em; }
+.map-title h3 em { font-style: italic; color: var(--stampede-red); font-weight: 400; }
+.map-title span { font-family: var(--mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.18em; }
+
+.sim-counter { display: flex; gap: 22px; }
+.sim-counter .item { display: flex; flex-direction: column; align-items: flex-end; }
+.sim-counter .v { font-family: var(--mono); font-size: 14px; color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+.sim-counter .l { font-family: var(--mono); font-size: 9px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.18em; margin-top: 2px; }
+
+#stampede-map { width: 100%; height: 780px; display: block; }
+
+.map-legend {
+  position: absolute; bottom: 16px; left: 16px; z-index: 15;
+  padding: 12px 14px; background: rgba(11,37,69,0.88); border: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+}
+.legend-h { font-family: var(--mono); font-size: 9px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin: 3px 0; }
+.legend-swatch { width: 14px; height: 10px; }
+.scenario-chip {
+  position: absolute; top: 80px; right: 20px; z-index: 15;
+  background: linear-gradient(180deg, rgba(15,39,73,0.95), rgba(11,37,69,0.95));
+  border: 1px solid var(--crit); border-radius: 10px;
+  padding: 10px 14px; max-width: 280px;
+  box-shadow: 0 0 30px rgba(255,107,107,0.2);
+  display: none;
+}
+.scenario-chip.show { display: block; animation: slideIn 0.5s ease; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+.scenario-chip .h {
+  font-family: var(--mono); font-size: 9px; color: var(--stampede-red); text-transform: uppercase; letter-spacing: 0.2em;
+  display: flex; align-items: center; gap: 6px;
+}
+.scenario-chip .h::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--stampede-red);
+  animation: pulse-dot 0.9s ease-in-out infinite;
+}
+.scenario-chip .title { font-family: var(--serif); font-weight: 500; font-size: 15px; color: var(--text); margin-top: 4px; }
+.scenario-chip .copy { font-size: 11px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+
+/* ============ RIGHT RAIL: TELEMETRY ============ */
+.metric-block { padding: 16px 18px; border-bottom: 1px solid var(--line); }
+.metric-block:last-child { border-bottom: none; }
+.metric-label { font-family: var(--mono); font-size: 9px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 6px; }
+.metric-value { font-family: var(--serif); font-weight: 500; font-size: 30px; line-height: 1; color: var(--text); letter-spacing: -0.015em; font-variant-numeric: tabular-nums; }
+.metric-value em { font-style: italic; font-size: 14px; color: var(--text-dim); margin-left: 4px; font-weight: 400; }
+.metric-value.red { color: var(--stampede-red); }
+.metric-value.amber { color: var(--ems-amber); }
+.metric-value.green { color: var(--success); }
+.metric-delta { font-family: var(--mono); font-size: 10px; margin-top: 4px; }
+.metric-delta.down { color: var(--success); }
+.metric-delta.up { color: var(--crit); }
+
+.feed {
+  background: linear-gradient(180deg, rgba(30,58,111,0.55) 0%, rgba(15,39,73,0.7) 100%);
+  border: 1px solid var(--line); border-radius: 14px; margin-top: 20px;
+  height: 320px; display: flex; flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+.feed-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
+.feed-body::-webkit-scrollbar { width: 4px; }
+.feed-body::-webkit-scrollbar-thumb { background: var(--line-hot); }
+.feed-entry {
+  font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+  padding: 8px 0; border-bottom: 1px dashed var(--line); line-height: 1.5;
+}
+.feed-entry:last-child { border-bottom: none; }
+.feed-entry .ts { color: var(--text-faint); margin-right: 10px; font-size: 10px; }
+.feed-entry.crit { color: var(--crit); animation: flash 0.6s ease-in-out 2; }
+.feed-entry.warn { color: var(--warn); }
+.feed-entry.ok { color: var(--success); }
+.feed-entry.ai { color: var(--security-cyan); }
+@keyframes flash { 0%, 100% { background: transparent; } 50% { background: rgba(255,77,77,0.15); } }
+
+/* ============ BOTTOM: SCENARIO THEATRE ============ */
+.scenario-section {
+  position: relative; z-index: 5; max-width: 1680px; margin: 0 auto;
+  padding: 48px 32px 64px; border-top: 1px solid var(--line);
+}
+.scenario-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 32px; }
+.scenario-head h2 {
+  font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 2.8vw, 42px);
+  line-height: 1.1; letter-spacing: -0.015em;
+}
+.scenario-head h2 em { font-style: italic; color: var(--stampede-red); }
+.scenario-head .tag { font-family: var(--mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.2em; }
+
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--line); }
+.split-col { padding: 32px; position: relative; }
+.split-col + .split-col { border-left: 1px solid var(--line); }
+.split-col.before { background: linear-gradient(180deg, rgba(255,77,77,0.03) 0%, transparent 60%); }
+.split-col.after { background: linear-gradient(180deg, rgba(125,216,125,0.03) 0%, transparent 60%); }
+.split-stamp {
+  font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em;
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px;
+}
+.split-col.before .split-stamp { color: var(--crit); }
+.split-col.after .split-stamp { color: var(--success); }
+.split-stamp::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.split-col h4 {
+  font-family: var(--serif); font-weight: 500; font-size: 22px; letter-spacing: -0.01em;
+  line-height: 1.25; margin-bottom: 14px;
+}
+.split-col h4 em { font-style: italic; }
+.split-col p { font-size: 13px; color: var(--text-dim); margin-bottom: 14px; line-height: 1.6; }
+.split-col .big-num {
+  font-family: var(--serif); font-weight: 500; font-size: 64px; line-height: 1;
+  letter-spacing: -0.03em; margin: 24px 0 8px;
+}
+.split-col.before .big-num { color: var(--crit); }
+.split-col.after .big-num { color: var(--success); }
+.split-col .big-num em { font-style: italic; font-size: 24px; color: var(--text-dim); margin-left: 6px; font-weight: 400; }
+.split-col ul { list-style: none; margin-top: 18px; }
+.split-col li {
+  padding: 10px 0 10px 22px; border-bottom: 1px dashed var(--line);
+  font-family: var(--mono); font-size: 11px; color: var(--text-dim); position: relative;
+}
+.split-col li::before {
+  content: ''; position: absolute; left: 0; top: 14px;
+  width: 10px; height: 1px; background: var(--text-faint);
+}
+.split-col.after li::before { background: var(--success); }
+.split-col.before li::before { background: var(--crit); }
+
+/* ============ PROOF STRIP ============ */
+.proof {
+  position: relative; z-index: 5; max-width: 1680px; margin: 0 auto;
+  padding: 40px 32px; border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(19,49,92,0.45) 0%, rgba(8,26,49,0.45) 100%); border-radius: 14px;
+}
+.proof-item { padding: 0 28px; border-right: 1px solid var(--line); }
+.proof-item:last-child { border-right: none; }
+.proof-q {
+  font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 15px;
+  line-height: 1.5; color: var(--text); margin-bottom: 14px;
+}
+.proof-q::before { content: '"'; font-size: 40px; color: var(--stampede-red); line-height: 0; margin-right: 2px; vertical-align: -14px; }
+.proof-cite { font-family: var(--mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.15em; }
+
+/* ============ FOOTER ============ */
+.footer {
+  position: relative; z-index: 5; max-width: 1680px; margin: 0 auto;
+  padding: 40px 32px 60px; border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.footer-brand { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--text-dim); }
+.footer-brand strong { font-style: normal; font-weight: 500; color: var(--text); }
+.footer-meta { font-family: var(--mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.18em; }
+
+/* ============ MAP DOM PARTICLES ============ */
+.crowd-dot {
+  position: absolute; width: 3px; height: 3px; background: var(--stampede-red);
+  border-radius: 50%; pointer-events: none;
+  box-shadow: 0 0 4px var(--stampede-red);
+  transition: opacity 0.3s ease;
+}
+/* Live people figures with pseudo lat/long readouts */
+.person-dot {
+  position: absolute; width: 6px; height: 6px;
+  background: rgba(238, 244, 237, 0.9);
+  border: 1px solid rgba(79, 179, 232, 0.7);
+  border-radius: 50%; pointer-events: none;
+  box-shadow: 0 0 6px rgba(79, 179, 232, 0.55);
+  transition: left 0.48s linear, top 0.48s linear, opacity 0.3s ease;
+  z-index: 3;
+}
+.person-dot::after {
+  content: attr(data-ll);
+  position: absolute; left: 9px; top: -2px;
+  font-family: 'Consolas', 'JetBrains Mono', monospace;
+  font-size: 8.5px; font-weight: 600;
+  color: rgba(189, 215, 234, 0.85);
+  white-space: nowrap;
+  text-shadow: 0 0 4px rgba(11, 37, 69, 0.9), 0 0 2px rgba(11, 37, 69, 0.9);
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+#peopleLayer.off .person-dot { opacity: 0; }
+.ems-unit, .sec-unit {
+  position: absolute; width: 22px; height: 22px; pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  transition: left 1.5s cubic-bezier(0.4, 0, 0.2, 1), top 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ems-unit { background: rgba(244,161,43,0.12); border: 1px solid var(--ems-amber); color: var(--ems-amber); }
+.sec-unit { background: rgba(69,209,197,0.12); border: 1px solid var(--security-cyan); color: var(--security-cyan); }
+.ems-unit.responding {
+  background: var(--ems-amber); color: var(--bg-void);
+  box-shadow: 0 0 16px rgba(244,161,43,0.7);
+  animation: urgent 1s ease-in-out infinite;
+}
+@keyframes urgent { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+.incident-marker {
+  position: absolute; width: 36px; height: 36px; pointer-events: none;
+  border: 2px solid var(--crit); border-radius: 50%;
+  background: rgba(255,77,77,0.2);
+  animation: incident-pulse 1.4s ease-in-out infinite;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 18px; color: var(--crit); font-weight: 700;
+}
+@keyframes incident-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--crit), 0 0 20px var(--crit); transform: scale(1); }
+  50% { box-shadow: 0 0 0 20px rgba(255,77,77,0); transform: scale(1.1); }
+}
+
+.route-line {
+  stroke: var(--ems-amber); stroke-width: 2; fill: none;
+  stroke-dasharray: 6 4; animation: route-flow 1s linear infinite;
+  filter: drop-shadow(0 0 4px var(--ems-amber));
+}
+@keyframes route-flow { to { stroke-dashoffset: -20; } }
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .simulation { grid-template-columns: 280px 1fr 300px; }
+}
+@media (max-width: 1100px) {
+  .simulation, .preamble, .proof, .split { grid-template-columns: 1fr; }
+  .proof-item, .split-col { border-right: none; border-bottom: 1px solid var(--line); }
+  .split-col + .split-col { border-left: none; }
+  .stat-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+  /* Unified Evidence-Dossier Footer */
+  .aicc-footer {
+    max-width: 1400px; margin: 40px auto 0;
+    padding: 36px 32px 48px;
+    border-top: 1px solid rgba(255,255,255,0.10);
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 28px;
+    font-family: 'Calibri', 'Segoe UI', 'Helvetica Neue', Arial, system-ui, sans-serif;
+    font-size: 12.5px; color: #8DA9C4; line-height: 1.6;
+  }
+  @media (max-width: 900px) { .aicc-footer { grid-template-columns: 1fr; } }
+  .aicc-footer .col h5 {
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #BCD3EA; font-weight: 700; margin-bottom: 10px;
+  }
+  .aicc-footer .brand-col { display: flex; flex-direction: column; gap: 12px; }
+  .aicc-footer .brand-col .logo-wrap {
+    background: #FFFFFF; border-radius: 10px; padding: 12px 16px;
+    display: inline-block; max-width: 280px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+  .aicc-footer .brand-col .logo-wrap img { height: 42px; width: auto; display: block; }
+  .aicc-footer .byline { color: #BCD3EA; font-style: italic; font-size: 12.5px; max-width: 340px; }
+  .aicc-footer .legal { color: #5A7CA0; font-size: 10.5px; letter-spacing: 0.06em; }
+  .aicc-footer p { margin-bottom: 6px; }
+  .aicc-footer a { color: #4FB3E8; text-decoration: none; }
+  .aicc-footer a:hover { color: #8DBFE0; text-decoration: underline; }
+  .aicc-footer .mono { font-family: 'Consolas', 'SF Mono', 'Monaco', 'Courier New', ui-monospace, monospace; font-size: 11.5px; color: #BCD3EA; }
+  .aicc-footer strong.name { color: #EAF1FA; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAND -->
+<div class="top-band">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="brand-mark">AI<em>Crowd</em>Care</div>
+      <div class="brand-sub">Proof of Concept · Investor Preview · v0.3</div>
+    </div>
+    <div class="top-meta">
+      <div class="meta-item"><span class="meta-label">Event</span><span class="meta-value">Calgary Stampede · Day 9</span></div>
+      <div class="meta-item"><span class="meta-label">Date</span><span class="meta-value">Saturday · 12 July 2025</span></div>
+      <div class="meta-item"><span class="meta-label">Status</span><span class="meta-value live">SIM · REPLAY MODE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PREAMBLE -->
+<section class="preamble">
+  <div>
+    <h1 class="preamble-headline">
+      One Saturday. <em>1.5 million</em> footprints.<br>
+      Billions of simulations.<br>
+      <span class="divider"></span>
+      One life saved at <em>4:03 PM</em>.
+    </h1>
+  </div>
+  <div>
+    <p class="preamble-copy">
+      This is the last Saturday of the 2025 Calgary Stampede, replayed at the speed of decision. AICrowdCare ingests demographics, weather, alcohol sales, sentiment, transit and anonymised crowd telemetry, then runs <strong>billions of staffing permutations</strong> against the ground truth of dispatch, incidents, fights and medical calls. The platform learns where EMS should have been — then proves it by resolving a cardiac arrest <strong>4 minutes and 12 seconds faster</strong> than status quo.
+    </p>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num red">1,470,288</div><div class="stat-lbl">Guests · 2025 Total</div></div>
+      <div class="stat"><div class="stat-num">193,033</div><div class="stat-lbl">Peak Day Attendance</div></div>
+      <div class="stat"><div class="stat-num">4.2<em>B</em></div><div class="stat-lbl">Permutations Simulated</div></div>
+      <div class="stat"><div class="stat-num">43<em>%</em></div><div class="stat-lbl">Response Time Reduction</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SIMULATION GRID -->
+<section class="simulation">
+
+  <!-- LEFT RAIL: CONTROLS -->
+  <div>
+    <div class="panel">
+      <div class="panel-h"><span class="panel-t">Event Clock</span><span class="panel-tag">SIM</span></div>
+      <div class="panel-body">
+        <div class="time-label">Current Time · Saturday</div>
+        <div class="time-display" id="clock">05<em>:00</em></div>
+        <div class="time-sub" id="phase">Pre-gate · Staff briefing · 71°F / calm</div>
+        <div class="slider-wrap">
+          <input type="range" min="0" max="1140" value="0" class="slider" id="timeSlider">
+          <div class="slider-labels"><span>05:00</span><span>12:00</span><span>18:00</span><span>00:00</span></div>
+        </div>
+        <div class="control-row">
+          <button class="btn" id="btnPlay">▶ PLAY</button>
+          <button class="btn" id="btnReset">⟲ RESET</button>
+          <button class="btn primary full" id="btnTriggerCardiac">⚠ TRIGGER CARDIAC EVENT · 16:00</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top: 20px;">
+      <div class="panel-h"><span class="panel-t">Data Layers</span><span class="panel-tag" id="layerCount">6 / 6</span></div>
+      <div class="panel-body" style="padding: 0 18px;">
+        <div class="layer-toggle active" data-layer="crowd"><span><span class="dot crowd"></span>Crowd Density · BLE+GPS</span><span class="state">ACTIVE</span></div>
+        <div class="layer-toggle active" data-layer="ems"><span><span class="dot ems"></span>EMS Units</span><span class="state">ACTIVE</span></div>
+        <div class="layer-toggle active" data-layer="sec"><span><span class="dot sec"></span>Security Posts</span><span class="state">ACTIVE</span></div>
+        <div class="layer-toggle active" data-layer="wx"><span><span class="dot wx"></span>Weather / Heat Index</span><span class="state">ACTIVE</span></div>
+        <div class="layer-toggle active" data-layer="alc"><span><span class="dot alc"></span>Alcohol Sales Velocity</span><span class="state">ACTIVE</span></div>
+        <div class="layer-toggle active" data-layer="sent"><span><span class="dot sent"></span>Social Sentiment</span><span class="state">ACTIVE</span></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top: 20px;">
+      <div class="panel-h"><span class="panel-t">AI Engine</span><span class="panel-tag">DR. YEOMANS CORE</span></div>
+      <div class="panel-body">
+        <div class="metric-label">Simulations / sec</div>
+        <div class="metric-value amber" id="simRate">140,726</div>
+        <div class="metric-delta down" style="color:var(--text-faint);">Monte Carlo · 4.2B total</div>
+        <div style="margin-top: 18px;" class="metric-label">Model Confidence</div>
+        <div class="metric-value green" id="modelConf">94.3<em>%</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: MAP -->
+  <div class="map-stage">
+    <div class="map-overlay-top">
+      <div class="map-title">
+        <h3>Stampede Park · <em>Live</em> Operating Picture</h3>
+        <span>· 51.04°N 114.05°W</span>
+      </div>
+      <div class="sim-counter">
+        <div class="item"><div class="v" id="cntCrowd">200</div><div class="l">In-park</div></div>
+        <div class="item"><div class="v" id="cntEms">12</div><div class="l">EMS Units</div></div>
+        <div class="item"><div class="v" id="cntSec">38</div><div class="l">Security</div></div>
+        <div class="item"><div class="v" id="cntIncidents">0</div><div class="l">Incidents</div></div>
+      </div>
+    </div>
+
+    <div class="scenario-chip" id="scenarioChip">
+      <div class="h">Active Incident</div>
+      <div class="title">Cardiac Arrest · Stage Backstage</div>
+      <div class="copy">54M collapsed. Spouse pressed SOS in Stampede App. GPS fix: ±0.8m. AI routing engaged.</div>
+    </div>
+
+    <svg id="stampede-map" viewBox="0 0 1200 780" xmlns="http://www.w3.org/2000/svg">
+      <!-- Park boundary -->
+      <defs>
+        <pattern id="diag" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+          <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(255,255,255,0.025)" stroke-width="1"></line>
+        </pattern>
+        <radialgradient id="densityA" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(62,124,177,0.65)"></stop>
+          <stop offset="70%" stop-color="rgba(62,124,177,0.18)"></stop>
+          <stop offset="100%" stop-color="rgba(62,124,177,0)"></stop>
+        </radialgradient>
+        <radialgradient id="densityB" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(244,161,43,0.45)"></stop>
+          <stop offset="70%" stop-color="rgba(244,161,43,0.1)"></stop>
+          <stop offset="100%" stop-color="rgba(244,161,43,0)"></stop>
+        </radialgradient>
+      </defs>
+
+      <!-- Background -->
+      <rect x="0" y="0" width="1200" height="780" fill="#0A1F3A"></rect>
+      <rect x="0" y="0" width="1200" height="780" fill="url(#diag)"></rect>
+
+      <!-- Stampede park outline (stylized) -->
+      <path d="M 160 120 L 1040 120 L 1080 200 L 1080 580 L 1020 660 L 200 660 L 140 580 L 140 200 Z" fill="rgba(255,255,255,0.015)" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="2 3"></path>
+
+      <!-- Macleod Trail river line -->
+      <path d="M 120 100 Q 180 280 160 440 Q 140 600 180 720" stroke="rgba(107,184,255,0.25)" stroke-width="2" fill="none"></path>
+      <text x="100" y="90" fill="rgba(107,184,255,0.4)" font-family="JetBrains Mono" font-size="9" letter-spacing="1">ELBOW RIVER →</text>
+
+      <!-- Key venues -->
+      <g id="venues" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="rgba(232,230,225,0.6)">
+        <!-- Saddledome -->
+        <ellipse cx="340" cy="240" rx="70" ry="42" fill="rgba(255,255,255,0.03)" stroke="rgba(232,230,225,0.3)" stroke-width="1"></ellipse>
+        <text x="340" y="245" text-anchor="middle" fill="rgba(232,230,225,0.75)">SCOTIABANK SADDLEDOME</text>
+        <!-- Grandstand -->
+        <path d="M 620 320 L 820 320 L 840 380 L 600 380 Z" fill="rgba(255,255,255,0.03)" stroke="rgba(232,230,225,0.3)"></path>
+        <text x="720" y="355" text-anchor="middle">GMC STADIUM / GRANDSTAND</text>
+        <!-- BMO Centre -->
+        <rect x="250" y="420" width="200" height="90" fill="rgba(255,255,255,0.03)" stroke="rgba(232,230,225,0.3)"></rect>
+        <text x="350" y="470" text-anchor="middle">BMO CENTRE</text>
+        <!-- Midway -->
+        <rect x="520" y="440" width="260" height="180" fill="rgba(255,255,255,0.03)" stroke="rgba(232,230,225,0.3)"></rect>
+        <text x="650" y="535" text-anchor="middle">MIDWAY / MIDWAY</text>
+        <!-- Nashville North -->
+        <rect x="820" y="450" width="140" height="90" fill="rgba(255,255,255,0.03)" stroke="rgba(232,230,225,0.3)"></rect>
+        <text x="890" y="500" text-anchor="middle">NASHVILLE NORTH</text>
+        <!-- Coca-Cola Stage -->
+        <rect x="880" y="220" width="120" height="70" fill="rgba(255,255,255,0.03)" stroke="rgba(232,230,225,0.3)"></rect>
+        <text x="940" y="260" text-anchor="middle">COCA-COLA STAGE</text>
+        <!-- Agri / Kids -->
+        <rect x="220" y="560" width="180" height="70" fill="rgba(255,255,255,0.03)" stroke="rgba(232,230,225,0.3)"></rect>
+        <text x="310" y="600" text-anchor="middle">AGRICULTURE ZONE</text>
+        <!-- Entry gates -->
+        <circle cx="180" cy="380" r="7" fill="none" stroke="rgba(232,230,225,0.5)" stroke-width="1"></circle>
+        <text x="165" y="384" text-anchor="end">GATE 1</text>
+        <circle cx="1020" cy="380" r="7" fill="none" stroke="rgba(232,230,225,0.5)" stroke-width="1"></circle>
+        <text x="1035" y="384" text-anchor="start">GATE 9</text>
+        <circle cx="600" cy="140" r="7" fill="none" stroke="rgba(232,230,225,0.5)" stroke-width="1"></circle>
+        <text x="600" y="130" text-anchor="middle">ERLTON LRT GATE</text>
+      </g>
+
+      <!-- Density heat blobs (controlled via JS) -->
+      <g id="densityLayer"><circle cx="180" cy="380" r="80" fill="url(#densityB)" opacity="0"></circle><circle cx="600" cy="140" r="80" fill="url(#densityB)" opacity="0"></circle></g>
+
+      <!-- Route line (JS) -->
+      <g id="routeLayer"></g>
+
+      <!-- Scale -->
+      <g transform="translate(1000, 720)">
+        <line x1="0" y1="0" x2="80" y2="0" stroke="rgba(232,230,225,0.5)" stroke-width="1"></line>
+        <line x1="0" y1="-3" x2="0" y2="3" stroke="rgba(232,230,225,0.5)"></line>
+        <line x1="80" y1="-3" x2="80" y2="3" stroke="rgba(232,230,225,0.5)"></line>
+        <text x="40" y="-6" text-anchor="middle" fill="rgba(232,230,225,0.5)" font-family="JetBrains Mono" font-size="9">100m</text>
+      </g>
+    </svg>
+
+    <!-- DOM overlay for live people figures with pseudo lat/long readouts -->
+    <div id="peopleLayer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;"></div>
+
+    <!-- DOM overlay for units & crowd dots -->
+    <div id="unitLayer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"><div class="sec-unit" data-id="S1" style="left: 102.28px; top: 369px;">●</div><div class="sec-unit" data-id="S2" style="left: 366.6px; top: 129px;">●</div><div class="sec-unit" data-id="S3" style="left: 630.92px; top: 369px;">●</div><div class="sec-unit" data-id="S4" style="left: 202.973px; top: 229px;">●</div><div class="sec-unit" data-id="S5" style="left: 442.12px; top: 329px;">●</div><div class="sec-unit" data-id="S6" style="left: 398.067px; top: 529px;">●</div><div class="sec-unit" data-id="S7" style="left: 549.107px; top: 489px;">●</div><div class="sec-unit" data-id="S8" style="left: 580.573px; top: 239px;">●</div><div class="sec-unit" data-id="S9" style="left: 209.267px; top: 454px;">●</div><div class="sec-unit" data-id="S10" style="left: 177.8px; top: 584px;">●</div><div class="sec-unit" data-id="S11" style="left: 291.08px; top: 369px;">●</div><div class="sec-unit" data-id="S12" style="left: 505.053px; top: 369px;">●</div><div class="sec-unit" data-id="S13" style="left: 127.453px; top: 529px;">●</div><div class="sec-unit" data-id="S14" style="left: 599.453px; top: 539px;">●</div><div class="sec-unit" data-id="S15" style="left: 89.6933px; top: 249px;">●</div><div class="sec-unit" data-id="S16" style="left: 643.507px; top: 249px;">●</div><div class="sec-unit" data-id="S17" style="left: 240.733px; top: 169px;">●</div><div class="sec-unit" data-id="S18" style="left: 492.467px; top: 169px;">●</div><div class="sec-unit" data-id="S19" style="left: 272.2px; top: 669px;">●</div><div class="sec-unit" data-id="S20" style="left: 461px; top: 669px;">●</div><div class="sec-unit" data-id="S21" style="left: 146.333px; top: 119px;">●</div><div class="sec-unit" data-id="S22" style="left: 555.4px; top: 119px;">●</div><div class="sec-unit" data-id="S23" style="left: 335.133px; top: 239px;">●</div><div class="sec-unit" data-id="S24" style="left: 429.533px; top: 239px;">●</div><div class="sec-unit" data-id="S25" style="left: 228.147px; top: 499px;">●</div><div class="sec-unit" data-id="S26" style="left: 492.467px; top: 499px;">●</div><div class="sec-unit" data-id="S27" style="left: 354.013px; top: 389px;">●</div><div class="sec-unit" data-id="S28" style="left: 448.413px; top: 389px;">●</div><div class="sec-unit" data-id="S29" style="left: 133.747px; top: 439px;">●</div><div class="sec-unit" data-id="S30" style="left: 624.627px; top: 439px;">●</div><div class="sec-unit" data-id="S31" style="left: 247.027px; top: 619px;">●</div><div class="sec-unit" data-id="S32" style="left: 505.053px; top: 619px;">●</div><div class="sec-unit" data-id="S33" style="left: 335.133px; top: 169px;">●</div><div class="sec-unit" data-id="S34" style="left: 523.933px; top: 269px;">●</div><div class="sec-unit" data-id="S35" style="left: 184.093px; top: 339px;">●</div><div class="sec-unit" data-id="S36" style="left: 637.213px; top: 309px;">●</div><div class="sec-unit" data-id="S37" style="left: 316.253px; top: 359px;">●</div><div class="sec-unit" data-id="S38" style="left: 442.12px; top: 549px;">●</div><div class="ems-unit" data-id="E1" id="ems-E1" style="left: 140.04px; top: 249px;">E1</div><div class="ems-unit" data-id="E2" id="ems-E2" style="left: 580.573px; top: 279px;">E2</div><div class="ems-unit" data-id="E3" id="ems-E3" style="left: 429.533px; top: 359px;">E3</div><div class="ems-unit" data-id="E4" id="ems-E4" style="left: 391.773px; top: 509px;">E4</div><div class="ems-unit" data-id="E5" id="ems-E5" style="left: 196.68px; top: 459px;">E5</div><div class="ems-unit" data-id="E6" id="ems-E6" style="left: 549.107px; top: 489px;">E6</div><div class="ems-unit" data-id="E7" id="ems-E7" style="left: 177.8px; top: 599px;">E7</div><div class="ems-unit" data-id="E8" id="ems-E8" style="left: 366.6px; top: 149px;">E8</div><div class="ems-unit" data-id="E9" id="ems-E9" style="left: 624.627px; top: 374px;">E9</div><div class="ems-unit" data-id="E10" id="ems-E10" style="left: 105.427px; top: 374px;">E10</div><div class="ems-unit" data-id="E11" id="ems-E11" style="left: 473.587px; top: 449px;">E11</div><div class="ems-unit" data-id="E12" id="ems-E12" style="left: 354.013px; top: 614px;">E12</div></div>
+
+    <div class="map-legend">
+      <div class="legend-h">Legend</div>
+      <div class="legend-item"><span class="legend-swatch" style="background: radial-gradient(circle, rgba(200,16,46,0.6), transparent);"></span>High crowd density (&gt; 3.5/m²)</div>
+      <div class="legend-item"><span class="legend-swatch" style="background: var(--ems-amber);"></span>EMS unit · optimised position</div>
+      <div class="legend-item"><span class="legend-swatch" style="background: var(--security-cyan);"></span>Security post</div>
+      <div class="legend-item"><span class="legend-swatch" style="background: var(--crit); animation: incident-pulse 1.4s infinite;"></span>Active incident</div>
+    </div>
+  </div>
+
+  <!-- RIGHT RAIL: TELEMETRY -->
+  <div>
+    <div class="panel">
+      <div class="panel-h"><span class="panel-t">Response Telemetry</span><span class="panel-tag">LIVE</span></div>
+      <div class="metric-block">
+        <div class="metric-label">Avg EMS Response</div>
+        <div class="metric-value amber" id="mEmsTime">3.0 <em>min</em></div>
+        <div class="metric-delta down" id="mEmsDelta">Baseline: 5.2 · Saved: 2.2 min</div>
+      </div>
+      <div class="metric-block">
+        <div class="metric-label">Active Incidents</div>
+        <div class="metric-value red" id="mIncident">0</div>
+        <div class="metric-delta" id="mIncidentNote" style="color: var(--text-faint);">Normal ops</div>
+      </div>
+      <div class="metric-block">
+        <div class="metric-label">Survival Lift · Cardiac</div>
+        <div class="metric-value green" id="mSurvival">+19<em>%</em></div>
+        <div class="metric-delta down">AHA: 7–10% per minute saved</div>
+      </div>
+      <div class="metric-block">
+        <div class="metric-label">Crowd Density · Peak</div>
+        <div class="metric-value" id="mDensity">0.0 <em>p/m²</em></div>
+        <div class="metric-delta" id="mDensityNote" style="color: var(--text-faint);">Crush threshold: 5.0</div>
+      </div>
+    </div>
+
+    <div class="feed">
+      <div class="panel-h"><span class="panel-t">Event Feed</span><span class="panel-tag" id="feedCount">6 entries</span></div>
+      <div class="feed-body" id="feedBody"><div class="feed-entry ai"><span class="ts">05:00</span>EMS re-staging complete · 12 units optimised against 4.2B scenarios</div><div class="feed-entry ai"><span class="ts">05:00</span>EMS re-staging complete · 12 units optimised against 4.2B scenarios</div><div class="feed-entry ai"><span class="ts">05:00</span>EMS re-staging complete · 12 units optimised against 4.2B scenarios</div><div class="feed-entry "><span class="ts">05:00</span>Replay ready · Saturday 12 July 2025 · 05:00 AM local</div><div class="feed-entry ok"><span class="ts">05:00</span>All data layers nominal · 12 EMS + 38 security positioned</div><div class="feed-entry ai"><span class="ts">05:00</span>System initialised · 4.2B overnight simulations loaded</div></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- SCENARIO THEATRE: 4PM CARDIAC -->
+<section class="scenario-section">
+  <div class="scenario-head">
+    <h2>The <em>4:00 PM</em> Scenario.<br>A man. A wife. A button.</h2>
+    <span class="tag">POC · Anchor Demonstration</span>
+  </div>
+
+  <div class="split">
+    <div class="split-col before">
+      <span class="split-stamp">Status Quo · 2024 Baseline</span>
+      <h4>Without AICrowdCare, the call <em>is</em> the delay.</h4>
+      <p>
+        A 54-year-old man collapses backstage at GMC Stadium at 16:00 — the day's alcohol-sales peak, 37°C heat index, Grandstand Show egress building. His wife dials 911. The call is geolocated to a cell tower, not a gate. Dispatch asks which venue. She doesn't know. Security radios. EMS dispatched from Infield Station — 480m away — but navigates backstage pedestrian chokepoints they've never been given a live map of.
+      </p>
+      <div class="big-num">7:24<em>min</em></div>
+      <p style="font-size: 11px;">Mean EMS arrival at 2024 Stampede peak (extrapolated from public incident &amp; event-safety literature).</p>
+      <ul>
+        <li>Dispatch geolocation: cell-tower ± 180m</li>
+        <li>Route: static knowledge, no crowd data</li>
+        <li>Triage begins on arrival — not in transit</li>
+        <li>Survival probability at 7:24: ~34%</li>
+      </ul>
+    </div>
+
+    <div class="split-col after">
+      <span class="split-stamp">With AICrowdCare · Optimised</span>
+      <h4>The button <em>is</em> the dispatch. The route <em>is</em> the crowd.</h4>
+      <p>
+        She taps SOS in the Stampede App. AICrowdCare fires three things simultaneously: (1) GPS+BLE fix to <strong>±0.8 metres</strong> — "Backstage R3, GMC Stadium"; (2) Cascading triage prompts her through compression guidance while EMS is en route; (3) The Dynamic AI Dispatch Engine already placed the nearest unit 210m closer — its 04:00 shift-start position was itself the product of 4.2B overnight simulations weighted on today's weather, genre, alcohol, and demographic profile.
+      </p>
+      <div class="big-num">3:12<em>min</em></div>
+      <p style="font-size: 11px;">Projected arrival with AICC Dynamic AI Integrated Dispatch — 4:12 faster than baseline.</p>
+      <ul>
+        <li>Dispatch geolocation: sub-metre (GPS + BLE fusion)</li>
+        <li>Route: real-time crowd density, egress-aware</li>
+        <li>Triage runs parallel in-app; AED guidance begins in ~40s</li>
+        <li>Survival probability at 3:12: ~72% (2.1× lift)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section class="proof">
+  <div class="proof-item">
+    <div class="proof-q">Each minute saved in EMS arrival improves cardiac survival odds by 7 to 10 percent.</div>
+    <div class="proof-cite">American Heart Association · 2020</div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-q">BLE-assisted positioning improves emergency response accuracy by 43 percent in large venues.</div>
+    <div class="proof-cite">National Institute of Standards and Technology · 2023</div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-q">Unified command protocols shorten resolution time by 47 percent in stadium-scale events.</div>
+    <div class="proof-cite">FEMA / DHS Integrated Response Analysis · 2021</div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-q">The single biggest predictor of outcome in mass gathering emergencies is time-to-care.</div>
+    <div class="proof-cite">AICrowdCare Public Health Security Report</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="aicc-footer">
+  <div class="col brand-col">
+    <div class="logo-wrap"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVQAAAB4CAYAAACtiwpMAABZ3klEQVR42u19d3gc1dn9ee+d2aLe3QvG2Ea2JdlrSbYpouPQAgTRQk2AJIQkpJNfQozSyUcIXwotHUIIbBK+FBJaAgJsXJBxAYHB2JZxk2RJVt/dufe+vz9mRlrJBRtssMmc59ln7dXszOzMnXPfe94GBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAHeN9BB2icdpH3/t4DTXgECBPgvhABgBZfhgEJ6r2ByChDgv8RCFd67AYDS0tJQIpGYoJQqJqIQEQVW1n5ap0KI9lQqtXXz5s3tw8hVB5cnQIAPLqEOPOQTJ06sBvBhZj6HiI4EECEKDKt3AmOMQ0RtAB4jon9s2LDhrwBUQKoBAnxwCVUC0OPHjz9CCPFtAB+VUoKIoLWG1hoINMB3ZvILQVJKn1zBzA1CiIXr169/NO2eBdc2QIAPCKFKAHrSpElnGmN+R0SFRMT9/f26r69P2LZNWVlZgXn6Tm4IERKJBPf398OyLJOdne1fbxhjbm1qaroJrswSOK0CBPgAEKoAYCZOnHgOgL8AkESkOjs7rcmTJ+O8885DdXU1xowZg2DJ/46sU7S1tWHNmjV49NFH8fzzzyMSiRjLspiIpDHmro0bN14P1wGogisWIMDhS6gCAI8ePfoo27aXEVEuEemOjg559dVXY+HChcjNzQ2u6gHEgw8+iK9+9aswxrBt24qIbK31DZs2bfo5Ak11f8Z4+ljnYe8BDl+e4sPlRPdonU6YMOFvQoizAejOzk5500034ctf/jIAQCkFIgqs03cJZgYRQQiBxYsX44orrkAikTChUIiZuQ9A5caNG1/37qE5mOdSW1sr326beDz+ToidamtrxQHeJ4CFoqbmGVFfX2/e5tqImpoaUV9/ggHqTDDqAryXhCoB6AkTJpwhhHjUt0yvuuoq3H777dBaDxBAgAMHpRQsy8Jjjz2GK6+8EtFoVAkhLGPMfU1NTVcGVupQ4h9OwpMnLwhnZW3PcWRGTgRsG8PKcbg7kcjfuW7dY8m3+36A9wsLBVBnKqqqSlnTnZxmhxJBk5AhNuahVQ1LfnYo3bf9CcRn98fQx4gI/f39OOqoo1BXVwdjTECmB+sGWRaUUliwYAGuv/563HHHHbKgoICJ6Oxp06YVvvbaa23exHiglz4EgGOxmO2wuJ1BowE44LRJmMAAbAJvtcl8oaGhwdnHcyEAXF5ePRGSf2AYBALDeyeCYEZSmtQXVq5c2boP+xQA2H+oKubMq2Q2pzHzfKDjSI3QCMkq4gAEAoSNRGaoo7lsdtU6IloM0JOrGpYsC8j0EISReSRQQ2mMysyQQsBRehUAtLS0HDLLYWs/Hi4zevToQgDziQh9fX3iuuuuQ3Z2NrTW8MN8Ahx4CCHAzLj66qtx3333kVLKSCnzk8nkCQD+7BHKgSWD2lqBeNwYEZpnEd3AzHtY0LjShGGOA3jO+57eh/HEVjRUYLS+aJdpmAhGKxgT+iaAvRJqunVSXjn3Qmj+HLOZL4QEwO5kDwKnPZAkKAwgVwg5hUBnGKO/UxarfpEIv+BU/wOrV6/uQ6CvHirSl2Jj9LDboYxWFgnqP+Se1f3ZzrbtMiIapbXmaDRKM2bMGDJQAxwkXcbTpEeNGoVx48YhmUwaIQSMMce9A+lm3/jUG8/GMZcws1ZKJZVytFKOSntppVSSmbXR5hIAXLs/xgez0lolh+1TKeUoY0yPlNLsyxK/vLx6YsWcuf8g0EMkaD4zw92P0sxs2B2kAy/vM6OV0ko5ipkhiOZIIe8hO1oJgPdFNw7wHhAqmEAkgcEXMySIJBiH3JJ4v06ImQuJiJVSpqioCEceeeQHZqlvmKENQzNDGwNzCE0UfrKEbduYMmUKUqkUERGYeaJ/+gf6kPF4XMdisVyW/GFjjPTSiCURWWkvSUQhY4xk4g/HYrFcz1qkfRxPBCB9XwPv8GJv9wIZj8d1xZx582HRC0R0plZKG62Nd80sIpLecbRHpn7RHuGTLBEJAGyM0UppDXDgTQ1w0AmVvIEpABAzQ0oJ27Y/GDINA4IIUhAkEaQQEO4y9pA715EjR8IY40sBuQMT+QFETU2NBEAOWQukkKOMMXsjSTLGaCnkKIesBQDI+/7BHrc6Fps7m8H/BGGkUkoRkYRLkPAtUSGEsCzbEu6srwCkAIKUlkz7HMzMPgEfiAnJJ27vRfv5XTHsux9kkn+n1+mQxDuuDsXMH4jlvkumwIvr3sJfXmlCV38K46MSF82bgQklhTDucvDQmQHTVgOehXfA4YYR1TMb/ijkbsl6d4Iqw/ClAB7yvn/wHsCFC1H6+OMFKsVxIsrVWivPqh1yftKyiLV5SUP9CUIsA4lmy7BiKbKUUWMlURVApxKJmBCwjGHeUzGfPUkA8Xic01YIXhhWvdqviW7hQlHzzDOivr5eY88ZcP6+3y4UDABEbW0t7eF896Rv7zaEbdjvOxDHGThWPB43u/m9ora2luLxxv8uQn1f9BRmGHbHqTgAsa4+Wf7yuVX42SstGDNqFFpNAn/b0IrfLXsYd3/0NBxXeuQhR6oH3/qrM+Xl1RNBOElrTTRo9fkSBA1x8hAJb7uTy8urJ65aVbfRszgOeGxnbW2tiNfVaTtW9R1hWZOU4+xCpuSyYh+M+dKqI8ffuwcn2XIAjwD4f+WxqhOY6fPSkmez1vY7IIgBPbe+vt7U1tbK119/a6RlUTaRTKVSXc2rV6/u3YOlzairM/XetZo6dX62zKL8DOJoihyWyu5pb7fbm5rqEx6Z+scyeyFsE4/H9/vxegdRDu/kOML7ngaAaZWVhSGEC6VSRqnetjVr1nS4+1x4WFqshw2h+qQmaUCBgDEMIfb/mrvE7Mb/LH/zLfzslVZccdJcjMm00d6bxKNv5mBdJIwb7/8nnvz6x5GfmQFm4L+BU30riC2cL4XIVErpYUthw4YfBPFFwACRETNrKWWmtsz5AG5Ps6YOKNnH43E9q7r6aKPwca2UGXZuvrWTFMC5KxuWPomGpVRTU2OVlJSwZ20BWIja2kZqaWmh+vp6taph2dMAnq6omneJhmpLs8wIAE+dOj87kqnvYEI2Mxs3vIsNkQiz4SVrXlp2Wzwe17NmzZvA0lz/+vpNp7PkSSnDlrRACGXcBuDm9IiE9H+7YV44l9kcA6jJbJCfIkiAoEmlcotUc1lR9VoC/RsWPxKPxzemk9OgobtQ1NXVmfJZ1VeTxNnGmAQzSS+8zQKhpb+z4PNe/K0fOSEAGC+E7fvMEG58JBspRNgwPbq6Ycmv/H2nn3tFbF4tyFyijUmCyQ1GAQlmdKd65Y1r1y7uxtAIDQHAxGIxW7F1FQu+FAYzwKlsTczCjnaWzaleJZgeWDmp7gHEYQQJadgEhHowNM7m9p146a0WsNaYPrYE40sKBzKKdkeaw6UJ34FG5GqlAPDo69sxetQIjM200dydQGFmGKMiEs35hdjypsAzL7+B8+eWQxsDSR/8OFtv2SnAfPGwa+tafoytbPNNpOlYgpjAbNgzWt3rzHwxgDu8/RwUsjeKPy6EFVJqqHXKzMayLKm0/tqaFcueLC2tDTU2xp20JbiHOqQbVr7Ft3LZCw+mDzt/5uasZJhZXmlJWw6OKwPLspFKJgoA/HBmrOoCJr6LhCxiL8mFmQ2BBDRnA4PxkgPRCZWV02Hk95jNOUJKsCEMGv4DYzYMIJuEmEygM7XS36yIVf+iv0d+2yOsAVJ95plnBABjCFbYCp3nZi0C6QXKsrM77gaw2ic6/5pqgRMjodDFSmnvnjOElOBUaiKAX9XV1XGate49l/rakB0+FVq5Ab7ed5xUavXFFy/uravblUxnzpkzVbH8tZByPjODYcC+gkQUESROI6LTKjbMvTpVqS/RhrsFDp8YtkOeIdjTOO9fvAZnP7QEX166BZ9+dgMW3Pl3/O+jzw4pF6i1HnDY+KFGQghIKSGlHNAfu7q79abNW52VL63sW/P6OrUzZdDa04+CzDB6kgqbd/a6hEuELW07D0nn1MHBQgGAp8+ZEyOimDGG4XnbmVkLIUHA02uWLdsM4D9CkO9BBwBpjGEiik2fMyfmPgMLD+T4ovr6elVaWhpigzO9ZJL0/RsppdRaNYZI/xyAbGyMO/vyLHqWoh8qRbvRrZmB9vSwLq11UmmlANpYHqs6UQr5MDMXKcdRg6FapAFmyEETyyfTsjnVH4GRi4Wgc5iZleMoY7QX5mU0MyvvNSTEC8x5JOWXI9nm6Zlz5kzyyFR4k6EBAIvFE6lUsscYpZVSXnibk2SGUYKq/Mlp6G/k+UrrtDA2pZxUShumSeXlc8dgaJSEnlxVlcPA9FQqqbXSjhdClzBKK2Z+pK4OJs05KQCYiorqowTLp4jEfKUcZbTS6SFtxhhttE5prVIkxAmWFv+WoKnMnAws1ANhmXpL+n+sfB23vbwDF9fMRVHUxrK32rBiWwe+/Z/nkR0J4WMnz93lu13d3bqrq9u0tLSqHe3taseOdtPZ2akTySQDQCgUppGFuWKUbaxVLa3457oIRmdY2LyzF61JjZB2kOhoQ2XpFAgipJQ6ILrtob3cf0bU18NYRlwspBCe59wfI4KZIQT+BIAM8GfBfDWlTcrest+yDF0EYLm/vwNFqAA4IyN3SsroyexyFKVbpy7B0u8bGhqcmpoaq76+fr9mwr1piORWVbPSiEWAWYB4Bph+x8xkDDtIC8kCoL3IGABAa2urqK+vT5XHqs4k0MMMI5Ri5Yeh+eQvpRT+ODPGwBiTLruwcpSSlowJY/1rRnX18S8vXdqSZqnSSy+9sKlsdvVrQog5xrUwhBvFAEFsjgXwy5KSEvYnqdraWrn2zaYqZra8SUoMWPxS5GpgNoAttbW1Iu5eKJ2hqYwIo739Su9WkAELKcQiAPCPsXDhQjz++OPRPsf8UQg5VivtEJE9bDUghJSSAMkMKMdRQohSw+buw0lLPaQJlQTBKIV7GjbgxPKZOCI7hO6URtXoPGxs70Zy6nTc8+/lmJEXTnS0tTutbW26q7tbJ5NJJiKEQ2GRm5sri4oKxLQpk0MlJcVWTk62yMnOHtDd5u/swtM/fABvSoGW/EJYgmCrJLa99gomZlrO4w/e3zHyskvyJo4fFwIArQ2k/EAu/am+vl6VlZVlGuB8DLUAjRBCGKPfSvZaTwNg4SSe0VakSQgxgV12E0QkjBvD+5FYLPbN+vr6PhygtFjX8xtHkvU0S0pruLbrlTZkIWQ9AKp3H+aDurpzrWQRAwCjtRZS2q7z0v3JzJCWJeGkHAsAGhtrVXn542MY/BswC2bWaRMWAyAhBAyb1WywDoyQIKqwLGus1nrAQiSCrZV2LMuawil1F4DzsXAhoa4ONTU10pM4niOiOf5EQ0TCMANMlbFYzI7H446XL89vvLFpEgSmshk6SQEwIBIgcyyAv7e0tFAN3PgNIp4nSMK7D5YnCQk2ptUJiQZvgjK1tbWirq5Ol8WqP2dJa7bjOhHtdG1OSCmMMYAxLxtQG8CjpZRHeavNwsApdUCW+q5+19nXh+Z+hQnawDAhJCV6UikkHQfRjCha+pK8/NU3nMqpk8QRRx4RKszLs6LRKGVkRMXerV8DYwxG5eXgnstOx2fvfxRb3hQwIIhEL0Kdrcm7v/Jx4p6OzO98/7YdsdkVkasuvyQvGol4A5M/ULULvDAWjVDGSRI0UWtlfEJlZiOlFEabR9euXdxdWlobWr063lsWq3pUCHG9UgPbCmOMkdKa6MCcDOAfA/t9l/D1RwJNGCIypum7xpguR4Q2AGC4XvD3Ypyyr91qo18zTI8ow68KZi2kHKuUWgApejzt1rBdeZMUdvGw6AQmIoDRBaZrpk6a8Bf/ms2ceWw+kfM1IcSXfWvTnUBgK+UoKeV5Myvnnbymru7fnmTBnlT2DDN/Po0giY0BM45KsDUZwKux2D9kQwOMljzHEjKcNkmxr5q5ygXm+fr6QGiVwbFe6gWljRGptX6xccmSdqTVV4jFYrkO+LNa66Gxvi6ZErNZw8CnbdJLGhoanMmTJ4cz8grPBOheIhR4UpIICPVd2UvuOAjbIURUP5ZtbkOEGPnRMJZtakGfZiDRB070I9nTo5ve2mwSKYcEAMuyLCC62936rVmIiKSUMMw4tnQS/vONa/Dv1WuxraMLFZMnoggp/PKXv2677YffGzVr9uyMB/74p52f/cJXt593zlnZZyw4NRuedus7uT4wZqoxl5KUnK7N+daNEfRnd6tX3OfB8F+Y+PrhWiYRiIy4FMDfDzyDUd7uPgVAJGhnJvo63+u5X0opjTY/tUnf1NDQ0Dfs7z+cOnV+NgBUVlYWJhVdYngosTAzCymEYf7EqhdfiK9sgHC1VmDNmngHgK+Uza4eK6S8RO9qmTMpcx2Af/tWIQBoyywjRZ1CiFxPgiBm1pZl2VrpOQBe7ezs9O/bccMmKfLXiK7jiMtKKytHNi5fvj0ej+v58+dndydUbNgqxiVywjO+RutFVmgNeZoUctSwVQWTW6Oi1YI+q2FFwybfAl+3bl0SWPeXWbMqOw2Jxw4XMj2kCZUAaGMQjUZw3IhM3LdhPV6wbTipNpAQyJSExjWrcNaMo+jK2tOyN23ektq8ZYt6be3ric6uLgMGZ2VlydEjR1jjx4+1x4waZRcWFlheERdKP45SGnmZEXxkXkX6KYRrTqjJ+uGP/rf1K1/8XPHVV1ya/6HTT8n6xa9/1/Hkf57uvebqK/KmHz0t4pP0YV4chuLxuJ4Wi41igw8ZYyht4BtvKbc+s8XVxhobGxUAdOVkLMrt6n+TBB2ZtuyXxhhigw+VVlaOjMfj23Fgq2HtLT3P2ZGV9Z7F2LiasSW10Y+tWbHssx6RWCUlJexb1PX19Xrt2sU9AJBQ4hgpRaHRSiPt+rrWPzesXrH0j572q31i9P5vIMT3jDEXpOu4/rWG4OOqqqpy4vF4l09KjcuXby+bXfUSEZ3ArjYxYL2C6FgA98+aNUutW7dOEFCdHgkD4HFmriSiAmOMllLmsuHZAP4JAP2OM0OQGM1pFXN8yYUNPwcA9SUlXONdA810kjUsgN+7dpZS6lcNLzVsKq2tDTXGB5yIFIvFrIaG5f8ui1U/LqU8czfhewGh7rdIJQQMM752/ilYduuvzMrFzSJ/1GiYVBI7Nr6JiVFh/ueqc0VhVkQWFhZEZ5XPHPjuzp2durmlVb21eXNq5aqXE8/UP9+bTDnIysoQI0eMkGNGj7InjB9nF+TnW5FIeBcT03EcnH3G6dmr1ryceOyJp3oWnHZK1sgRJfbNX/tyyUsrV/ff9Ytfd4wfM9r62JWXFxQVFfo9nwZkgPTA93Tx69B0Rrm6WxjyHGFZuUo5Oi0P3n3gjf7Hks1L+v0H3ntPlMWq/iGE+Fzasp+MMdqyrFwy+sMA7knT9Q7AwoUTu/FRkGfzhHM7Ot6zh84NIzNsSHwHXsrt7n5nLBazGxoaHCEwm9zIqIEUt0GNk58YZnHDI2QFgFYfMfbVsvVNr5EQM9ld+lPaOBvpsDUFwIvAQvKKaysiepaITvCPR+RanACqampqrHg8rsrKqo4A42gv1tMNfzP4NYBCIioAyBCRFFof4xOqNmKeFILSnJbepMubhE6u9jx8pn7g5nCpm9mbZsgQSWM0pBSPAaDpgG5M66SQlZXlWdX4J0Bn4jCJnDq041DZLZCZ6O5U1WhvXzC/snj5hm3kCIX5Z81H55plba2bNmQXlR4d8TsF+EScl5cr8/Jy5dQpk8P+7np6ek1za6vavHmLs37DxtSyFxv6E4mEiUYyqLik0B49cqQ1ccJ4u7io0MrIyBAA8I2vfrH4S1+7efvMGdPDo0aNtJ1UimdVlEV/VvHD6CN//UfnTd+oaz7pxOMyLr2oNs+rAAUQDcmsomG68KEGP2aUGZcy8xC68iwPGMaf0rZl/zsEETfGfG7IMtTdF5hxKYB7DmRMKoPaduf0dY9nCkN2diGAXhycGrEYKm2QMGw29GRnNKRfk+HwyAFgjNtTeoiBWbsXgdstiTi7aoMQNFN57OQt442UltDaGelu2khAiaejcr035uSgomMAYFpHR98kAK+TJSpJUtSXEowxSXZCT5KV+hCRnEPkR4DR/MGT5WO92A6f1FlKCQ2zdPVLq3vTM7lKS0tDICphTtPxPBvDGNNPNm3ytNYh98qLEGAmvGF4lxC5gFDf0Yg1BlJK3PGzu9s+fPYZOZWx2UMG45ZZk/O+c+vtO277wbdGRCMRkd56xbcQB+JShUBWVqbIysoMHXnExJC/j0Qiya07dqi3Nm9Obd22Xa1+uTHR39dnLNsWBfn54oiJ4+3jjz0m43u3/mjHz//3tlHh8KA1e96Hz8o96cTjs3/9u9+3X/fpG7deedklucfMq84EgO2tO/Dmps1IJFKIhG2UTZuC7KzMQ3IhAMCUzZk3A2zmGaM5rcCIISEEG92oExkvTZ48ODkNWPL94VVWpK+RhCxl32lCJLz9zCubM2/G6hdfeBnvMhW1xPfas97A7NaJHmqhshFSRjWrqQDe8qMCDqYzSggBYcSGpvr6xN4I3D93A84VXp32XaxrIzqG/M70FURLC9W7NNThc9hQhxzAhBzfeTcw2enkCoNwMxGNSNdRpWVFQGoOgDeY+HgBAhFpIYQ0hl9ds+b5jrJY9TIAVzG7jikCyktL5xakUjt6QVzpxQGnESRBAE+nOxABoCMatYrB0d1Y9wA4YWvdvRsnI+LxUgYA28geI7Q/TgNCfafwdck/PfLXznHjx9mVsdnRlKNgWRIEwNEaY8aMts8754zsn931i7avfvFzxelapn+vh2ubfuaUby1GImEaN3aMPW7smAFtTimFtvYOtemtzc7mLVuczs4urY3ma6+/cevxx82PFhcWWmPHjLJHjBhhFRcVWp//zPVFzS0t6p5f/Kb9uecW9556+qkFHb0Ja/TIEiSSKWzZ3oyH//EYzj7lBJQUFR5SlqqfKUOsLxTCsodlH5F7rWiMFUkstSOFfhrjgLnISGhmGuOl+FDa95QlLdsYdSGAl99tKqpvwdhkv+oYlQBRJE1NcaUJ12I8HcCT79GSHxqmb4gVubftec8TCgt+W8LgvVhpZIQZJhmIVatW7SyLVb8ohDhTDabpMoGgWcwD8AcAc9P1U4JZ4pqSqsEYNkSw2BgjpJVvR/nocLiw3RCN9TLkhHtaZGmttGFa5K1iBs5lgm1zX8rw7iJJGUSO4+z+N9U2EuIAS/ZH3J4qnB9y1skhaJm65QHXb9iYWrRkaf/Hr/hovtYGIdsaCK4PWRa01jjtlJOyAOCJp/7TI6WEVw5zrw+Bnz2VrncaYwYyrSzLwoiSYqsyNit63jln5Vx1+aX5d//0x6MLC/Nld1e3CYVDtGjpsr7f/v7Bnf9z+09bf37PL9tWrX65/8ILPpI7ZtzY8CvrNvAxlbMxZeI4TD1iPKYeeQSKS0bg34uWAodW1lV69lHtbpZW5GZnUy4JKgXRVICmDbyIppKgUhKUO4xQvcgAAzaoLS0tDfla4LsZFgCooWHxBgBrhBBDnBy+NMGgS8vLa/LScvH3+Vpg4f5ndhG9vdU9YLFJat+NNeYG8zOVAKDdtfPwCYrARcDw6+yFNsHsTLdw/UwowfxM+nFcHdUA4FmxWGwUM0/zDAzJDJDBswDY6e9vBHMTucs+JQTBMM/RzJVSivQMOZfnCW+YZPdrw39fOBx2COgZrnR4Vm8GwuG8YcqYy6e+ccMmz4sGOCw01EOSUN2K64p/eve97Z/55HUFlmXR7iw6X7O84VPXFv717//q3ra92fFu9n5bGnsjWaUUjDH4+le+WLS+qcmZVzUn4xMfu6rgyzfeUHTtx64oOOXEE7IA0KLFi3v7Egl59LSpNoGRTDmwbRvGaBQXFmJnVzc6uroxkPf+PsOPKZThzOOEFNM4Lc5xl/Wt68Ld9WWM2cOPEa5lI6bJcOZx6cd7N84zV7vkP3sVr8wQI80YLYUYxVb/d4GB1Me3OybV1NS4nnO3+MdBeyaIsWEvf56xB8mAAPDkyQvCIEzZzVJbGGM0pLU53ZJ3SygChug5L45Tpq86AEx0YJ0riDI9x5g0RieJxHIAaGxs7GGmFwefB0AAx4Jwkm/Q+isDIQjEtLixsTGVFgvLAER9fb1iYJs35jntHIwQImSMmAyvNOFuJiGSwEwanFADQn1nS32BX933QMcxc6ujk46YGHLjPQm712GAzIwM8Ylrrsr/8U/ubGMvYP/dEJb/XUEEKSUsy10BZ2dnyY9eeEHu1+u+26KUZqUUfMfXaaeclPXxq68oOOWkE7KaW1vRtrMLzIwd7R3o7u0HkRs5cChOtILEpX4xj91Q6UAbkb3ApFXFT/+yISKAxKUH4jx9bdAR+J3WusMrDj3ESlVKaUHy+rJY9Rc9q9gAkLW1tbK2tlbW1NRY/r99sqqvr1ex2Cm5FXPm3T6jYo5P/gcsWmBQF+Vlw5xE8LPLmPiM0tLSkLvtwLlRLBazAHBmbsc8gpjkh6cNWofEIGzsbA2tG2odusVMbKg17FuanpXvjcEiMG7ws2TJvZRrJ08etwH+bxf0vHcfhdEaDD4ZAmcao9NXMj6xPjNcPx0gSaaVtGvdU0NuN8YLAJgtW7b4kx9hsFsDA3yed81EQKjv0Am1YuWq/s1vveVccN6Hc98uxlMIAcdxUDZzemT60dPC9/0x3iGldG+F1jBa79Mym42BUWpQS/KKoxhvH0IIaK0xq6IsWj5jRvi+Bx7c6XckZeaB4iyFeblob+vA5uYWbNiyHVtbdiAcCuGN9RuQnZWJ/NwcrxTg+y4HUTwe15WVlYUGfJZn+chhExZZliX39TV8GeEvwwE+q7KysnB/2qPs6TbV1tbKxuXLtxPwfSGlYIba9ZjaSKLbyudU/3KOW0BEx+Nx7dUrVf6/4XVerZgz70uKu1dIKT4vhH3Aw678mFILeqk2eoN3mQaKUhtjtBDySCsj62vuecUHCk03NDQ4sVjMJubvuGFHnB7LaYRraTze1FSfSM+U8q9VQ0NDHwFLvEaP6RNmmAilnvVphOvZWhqPx3XpK694wdq0xLdu3YpQyAdTEQ/KO0xEUmudlBAvDNdP/YmEYR53AxMGSdHVXTUT0aXlseoT3GB++DVedX19vSqLVX6KSFRrV8cLnFL79IT46wkPPT095jf3PbDz5pu+XMxvk97plYsbaMVy5eWX5H/5q19vWXbkpOSsyljYlnLg6U2PEd2NlgMSAiRcH2xvVxeM1sjMzx9C5kSuBX3lZRfn33RzXfOLK17qnzN7VtSfCJgZebk5mD7lCCx96SWMHjUamRlRbN3ejObmFnz0/LPSlvvvL6H6MZNJRWdYliwZFjhthBBCG92otaljFkRk9jgrCRbEgg0Z3CykmJmWIunHpJYklT4DwP3ecd+Nc8rU1tbKlpaWH3f0JE63LOtkpZRDNCTgX2hjjJTy4ynNF5XNrv43wEsN01sMrSyIXCZxBMHMYXCVIGQzAY6jNNFBWUKwF0rUNzNWdbeU8lbHSWlyzULXStXaENEt5bHqLAV5d2ez2TpihEOaQtOV4e+SwDHaGENIyzQiImO0Yoi705f7u2i3bvbSxbtTcpDeYkWI5wGguLjYAAA72a/A7nyLiMZ7ZEzDNFwWQpBh88pLK5asx7BIB28iof7ujuczcgobhRBHm11lpTAD/1cWm3szhH48YUx7GPYoYvNRAF/yCsMEmVL7tLxnHiiTp42BFAJ33vurtnPPPiu7pKTY2hMJ+hYlCQEQYcPKlVjzz39i67PPoui114ofvfcuXj5lMjKOmoJp552HWWecgUg0Ovid4fsAsHbZMqx8+GG0NzQgsWkTnFQK4XHjMKK6GlNOOgmzzj4bQkhopcAAvvS5Gwpv/vb3WyZPmhTKzc2RvueemRGbOR35uTlY8+rrWLNmnc7IiJprLvmIXZCXO5Ak/X7DJzUmXMq7PmhusDnoN2tWLHt4X/c5c3bVGCL6MQ/GSQ5Mmky4FMD97nEXAqh7x+TkEYeuqDj2EgP1lGVZZV50Qnr5PeFNEllCig8T8GE50L7IPy8JGO0X+IBLcAdHkvHIRZCT+LlG5DJp2TP1YGA8YbBX25ekVp8uKMFmh6VNMBNJCKTXVvDgWJYVUkr/cM2KJWvSC1bveo/lorQ2Memz+aCVqYwj3S4G7vdqa+XqeLy3LFbVIIQYr5TaJZ/eHSdCEJvnPc3aGpbY4E8kyYpY/neJrAeYoYgGbgJ51apySYifGE2JCEQfYHK9ugA8vDtEQKh7sUwlEZxUCjt7+lBckIdnnn6m2zDj5BOPz9rbUt8nwr7ubvzxM5/BpngcI/r6MDYSQVlmJkWjEUq+sQ7tq9dg1cMPo/7II7Hgpz9FxSmnuMt3KQf2sWPbNsQ/+Un0P/EEJhqDGdEoIqEQFDO6Vq/GthdewL/uuAP/njsX591xByZXV0OlUigqKrQuu/iCvNt/cueOb33zayP88/VJddL4cZg0fhxeWrk62bDipb6CvNwipdSAHnsISD1m1qy5kzXMCUYP0cS8MBidECby19raWvnKK69I32rZHXp6emjSpElm/fotf3e0+h4RRTGYHimM1iCgZtasuZNfemnJupqaZ6x3WdbPYOFCsbKurnXGjOrTENYP2bZd48kvA8TqhwlppcwwIuE0VUO4nm8oIkhjWBzEIU+rV6/uraiouhgwT0spS7Q2DhF8UvXJPUpERw06R9PJlA0zjG2HQlo5/1KJnpvhdoA1e1oA2pxa60C+QUIczW6N2/QZnYkEMcw6QXpAh61paRFuphMtAnDenhxm3irxmaFa8ZCJRKO2Vq6Mx/9QNrv6PNu2LlBKpeCmEHsTCdi4YV0RIhHxJLSkECLMxrwMwiQwMgJC3eNS3V0+P9jwBn7fuA07ehMYzX0o2fKK+tnNXyzYF8u0Y/t2/O7CC0HPPYdTRoxAfkkJhBCwhUBISoQKCnAEESqUwrb2djx+xhno+uUvcfwVV0A7DqRtY9uGDbj/tNNQvnUrSseNQygUAojgKIWU1sjPycFYZkx3HDQuXYoHzzgD5zzwAMoXLICTSuGYeXMzVr/8auKP8b90Xlx7fm46qfoJBaNGjQw172jrA3DI5PsPVGknc66UMqSUSvpjYSDAm82ilSuffWPlSggAqbfbZ0NDgwDwZtnsqueFECcZYzQz+z9YWZYV1lqfC+C21tZWf6nr1wxFGuH573vPrvI88i+/vLR58uTJp2fkFd0siG4kS2YabcBudey0/Jx064oHVSZmJiGElNI2RrNN1LsHNtRwHXQD58fussTs10QAiJUrlzXOjM09RTLus22rwgvXM4MK2OBx0rLsNBEJIaQgIqGVus8i/alVjY0p7DmpgD2r0SmLVS0ioimGWQ177pUQZLHBsoYVDc5AbyyPHAWJF9xzI04LlfInXhhjukjLZela8W7McwOAkhH5MUrqYsuyapRSzMyK4GYVeJaoYgYTQVq2HdbK+RsT/Q8YT4KN5iGLWwbo0PP8v+fahGF2yXTFG/jV+m6cWFmOuRUzsDY6Ei+Ex+Y3bmuTvpa5W80UQG9nJ357wQXIfO45zB8/HrmRCCwiFEajKM7IQF4kgqhlISIlMiJhTBk7FpdPmICGG29E46JFkLaN7p07Eb/ySpzS0YHjSkuRnZmJiPednHAYhRkZKMrIQFhKRKTEzPHjUZpI4P8uuACvPvss7FAIynFw3ceuKFjesKJ/zSuNCSlleotnCCGQn5crleOY/v5+Q0SHQkIy1dfX6wk1NRECXS+EENKywr5jSQgRsixLMtPDQzy1+0DSLvFQPH0/lmVJaVlhIYQg0PVj586N+sVVBJElpfS3s9LfhRBZWmuxDwRF69atS65+cck3LJIxo/l/QdgkpBSDv0lKEkIQCUFCCCHkgCNNSClAtMmwucswKlesWLbMd9ilOUuJiPLSz889b9sCc9Z+W9eAXNOwZE2qv+s4rflmEJosyxLetZJSSimEtISQUkj/XG3pkc6LWpmLV61YeqVX2WqfUmyJxTPSRTjdkej+X0oiWjxEd/XIMST0y8zcZYdse8j3LMuyQyGLiF9dtWrJFvgNB/fiKlm7eHE3F/SfqY2+m4jYsmxLSCn9+yLdq2sTkTFK/9yCvkCQSFqWFZG7nLNtGeCQSz18Ty1UXz9MJpP4/SvbsKCyDKOiNkZGcrC1uxiLtm/F3U8sxl3X1bptR4ZrjeyGd/z5ppvgLFqEivHjESVC2LJQnJkJQQTj95AigLUBDMOBQk5WNmqNwYOXX44Jq1fjr1/7GipWrcKMKVPR09fni0kgOUjmtpQoycxER38/uhMJHFFcjL6tW/Hw1VfjC8uXIzMvD0IIfOnGGwq//f3bdvzP9741IhqNCF9PNcYgHA5TJBoRrW3tevzYMeIQ6fbHmYBliL+aSCXFLq2THcNRC497eto+5eH724VIPawc3qmGtbh2FJMQwuSEI9L3cKt+sZ4sfeHwbQUzAVLZtm5OI6G9Diuv7upaADdWVVV9Mwk5F8bMNZpnkOBRDOQAFCIDZYAuQG8VQq4B8wsW1LKGhobOPRGB6ezsptyCC5Wjw8ZzzhERaydhE4lN6QS0r+4DAKKxsbEHwHdisdhPNcsTmMTxRvN0IVDEzBluYwTuMZq3CctaAdB/VjUsWZRmDPHbkenA/dPhR1Wq76Ld3UyTZLKF+vew+80AsGzZsq7yWNX5jnJGAlB+63IiYm2UDchdgvn3Knk8uboXwKdmxub+glhfBMNVDCoBg0G8nVkshTDxlcuXrwSAiopjN2qhLtJpCxb/2guBxv0Zo++JtbIfxKvGjRt3oW3bDyWTSV1YWCjr6+uRl5e3z6mU/nbtnV0448ElqJ41A5UjcrC1qx//XNeM7ZvfwrTEdvz5S1dCkBjCO/5Sf9u6dbhr1iwcEwphdHY2bCEwKicHYEZ6fzPWGjIrCpkVBYiQ6u5DRkpjefN2LJo7F+PXrMF5oTD6oyHY2ZkgS8D0JqG7vRWflAPRB1IItPb0oDeVQpdSqN+6FXN+8hOc9pnPwEmlYIdC+PfTz/YsWba87+tf/WKJv/T33+/99e/ay2aURuZWVWbsTc7Y6xPo7euWW27BHXfcoYuLi6XjOPVNTU0n4OAXAjlc4PV03zUFtKamxmptbRXRaJQbGhqc4X93l7qlDNS9l8tI2kMBblFaWmrt/Vzj+jC9R35UwcB1Li0tDe3mt+7ThPFfbaH6DpvczAyMMr148tVN2NpVjOauXkBYaN24DmeXjWMpBCmtIdOKN/vhTav+9jdk9/Qgf+xYEDPyotGhd4cZEAIZUyYgNLoY5IUVZmiN1NY2lIHx10cfxaljxsKaOAo5E0dChkN+AVY4Hd3oa9wI058EWa7T1xiDvGgUCcdBpmVhrGXhtUcewak33ADLtqG1xsknHp+1as3Lyb/+47GuD5+1IMcrZA0AGDNmlLVte7NKly0OBXjhR5Rev9N3LrxN3/e3JYnh+/OPM4wIBrZN32YP2+7TctoriDJkv/F43AzzPu/y97c71vBr5b+7GUnvmIT93zhwPp5n3jS62qh/cFnT0uK2ddmHc93TfUlrmofh98avIrav4yTtewb7l8XkkeRC4ZUZ1Gm/ldLC6syezvtdHPuDZaH6GqogwuLXNuCK+55AIm8ECnKyseX1RkzLlHxGIToqpk62z/zQadnplpnvnf/NpZeC//hHzB4/HhEhMCI7e+iPYEZW+WRYowqBpDPoAWMGbAvcshN/eWoJji2bghEzjwQcx70Mvq8hZMH0JtDTsBYmkQQ83VMSYUdvL7pTKWxqb8cr2dn45OrVyCsqGtBNHaX4y1/75vYbP/3JwkmTJoZ8r/5LK1f3v7Bsed/113288J0Wow4s1AM61jk410Py9x72v/U9d0oJz0qdP+0I/OmaM3BOvoZ8ZbHz8fLxfHy4p+3aS87P2tbcrL57649at29vVr6jxyfsnu3bkSElBICQlG4cq2v+gpVGaHQRrBEFQH9y4HNoDVgWIG1QYTbOqJiKkokjASEBO+z+nci9rckURGYEkUmjXQ02rSpuyDtuJBSC7ulBV0tL2mgghEMh+uJnry/88c/uakumUuxrk6NGjbA7OzuN76wK8P7oxofREvJwOtcD+XsPf83pfZmOPOdRxaRxuPPaj+Ci8Zkd37/4dHPJOR/K/Mldv+q45qrL80875cSsO35+T9u/HnuyW3hZTMYY2NHokFz7wWnNtUTt4jzAK/IMIsAYcFExEJsLVM0HppcjMnkc6KgpwJx57meTJrvfcRkPUAp2YQ5EJDT4uXc8X7Ygy0IoOljmUQi3x9SECeNDC049Keund97bJqUkYwzy8/JkKuXwIeTpDxAgwAeFUH1ycpSCNgahcES8/PqbTlnZzGhJSZH150f+1lkZmx1d+P++Urxpyxbn+z+8vXXbtu1KCIH8adOwU2swAGVMWkFM1xola6CoDhIpB62asW3UBGx3FLp6+6ALikCxSmDiJJc8iYBJU4Ci4kFLlQGyJMi2hmieit2Clj2JBMLjxqFgzJiBCQLAgCPqzA+dnq2Uw0889Z8eIQTC4TBFPU//gM4bIECAgFAPNKlKIZARjVB/f59hZnzi41cVPPP8or5Nb212otGI+MTHryo4/bSTs+74yZ1tT9U/311x1pnoDIWQcBw4WkMb43cJA4yB6U8CQqBPKWyHQPeEI6FHj0MyJw8tBujo7ILJyvEWGexaoGyAjEz33T0xmP4kTCI1kJrKAFJe2mlrIoHCOXMQCoXc4itp+rFfUvCz13+y8K//+Fd306a3HAaQlZUjtmzd7mhjoI0JRl6AAAGhHhxkZ2fLnp4eQ0QIh8P0iY9dmf+zu3/RZoxBKpXi2RXl0Vu++bWSDRs2Og8tWtbakZun2vv6oJjR7zh+OwU3PGpbO2AMerSBHjkao2aWY9yUKRg7swKZY8ahWxuoVGqQBIVwLdP2NldTNQxYEqnmDnBKuVYvEVJKIakUelMpbANQUVu7RzkDADIyouKGT11b8D93/GwHASg7aqLVvm2zI4WA5bWvDhAgQECoBxw5OTmip7fPAEAqleIZ00sjR0+dGv5j/C87Q6EQOY7D0WiUrr3qsoJzLzg/08yd3//qzp1IGYPuZBKaeWCZ7uzYCWd7O8JhG9zVha5tW9D1+mvoam1GorsLNrwKVj6h2Tbw5htAV6dLrpaA6epD8q1mL2zKDdfqSiahibC2uRn5J5+MmaeeCjYGYjcee7/U39FTp4RPPv6YjHt/ff/OF/pDmT9cuT3yzb88jRffaBpIQggQIEBAqAcEAwWiMzNEZ2e3BgZ1yMsvvTBvecOKxJvr16ds2ya/en7ZtCkZ34v/MduZNw+vb9sGJkJnf7/roGIGSYm+V5sQ7U2gINGNvoblaP3342j/658Qam1GYXYWLOE5rKQE1jYCmza4UQBEYG3Qu/pNGM86FUToTaWQUApt3d14MxLBWT/4wduGPnltG3DMCSfk/nyzylxk8mXR3JPDf2gVOP83j+N3Ty8LSDVAgIBQDzxyc7JFb2+PGeRZAcuy6DOfuq7gp3f/sl1rt1aET7Z2OIyPPfgg3hw3Dm+0tKBPqUFSJcAojf6VbyA36WBcSGB0sg9jO9swal0joqkkYIdcvXTNykEyFW5WaO/KdVBdvSBLQBCh33HQkUhgZyKBZ9vbcdavfoUjYzE3lGtYCNRA2xSP/JkNvvvUS5hVc5L90dmTcf60UTil9AjkHV2B7z22DBtb2gJSDRAgINQDi6zsbNmXSHisQgMhSJOOmBiqisWiv73/DzvTUzmN1iieMAGX/OlPaBAC23fuRLfjoCeZdONSpYBJOehpWAvq7EU0KwPhSAQi0Q+sagD6+oBXXwaatwJWCJACnHLQ0/AanB07QbYFAUJSKbT19aE3lcJz27cj9oMfYO7FF0M5boac39QvvWukEAJSCNiWBZBAw45+HJmfib5UCoYIBWGJSDiM/nAWnlnzxgARBwgQ4PDH+1qc01/y52ZnC+U4aaXWBpf+l1x4fu5Xb76lec0rjYmZ00sjxtMtjVI4cvZsXPDnP+P/zj8fx3V1gXJzASJkhUIwUsA4Gt0r1iJ69ASExxYDbAGpFPDySqCvF7BswBLQnb3oXb0OujcB2BYE4JJpfz+6k0k8u20bjvzqV3HWV77iXjTb3uW39Pb1ma6uLtO6o03taGtXO3bsUFu3NfPOrpzchu2dIsciKAYaNu+AJSV0KgkVePsDBAgI9UAjHA6JZDLJxhgWad34hJfL/9lPfaLg1h/9747bvv+tkbZtEzMgLAtaKcw85RTohx/GX849F8cZA87LgzYGuZEIjHR11b4168HJFCKTxgCKgd4e9wAhG6qlAz2r1rnFVzwy7XMctPf1odtx8GJ7O6Z/85s4o64Ofb293NvXr9va23VzS6va0dam2zt2qr6+fjZGcygUFtlZmaK4qFCOHz8hNK+q0l7zr2X0zLqN6EqMQTKZBEsLyfYWoKsNx08/asjEcpiAhr0DaX2MgkcqQECo77OFmhGNkjHMiWSSM6JRGmh045XAGztmtH3KSSdm3vvr37V/5lPXDeTDS8uCUQoVCxbAfvxxxM8/H3NaWnDkiBFQxiA/GnWPYUv0v/YWWBlEp4wDHAXYFlRrB3pWvuGm+3tppZ2JBLpTKXT0J/BU83ZuO+Gk3pyyWamf/PweTimHw+EwZUajoqioSI4eNVJWlJVF8vJyZF5urtydo+qWj2ThlO/8Ur/e0Sazc3OR7NqJtjfX4pbzTsCU0cUDtQ0OdWmopqZGeMU59F7IM327d1pcJUCAgFDfKZgZlm2TZUlyHMeYSET4dU99K1VrjQ+ftSDn5rrvNjesWNkfm10R9cvg+Zbq9Joa2P/6Fx666CJ0btyImePGQRuDwowMN0wqbCOxfitEyEb4yNHQOzrRs3Kdm2AlBQTg1j1NpbC5vR0N/f0o/8GtPPaMMyjDsjKLa46VuTk5MhQK7ZH9BvVUArOBZVnY8vprPR8dbafCU0oKFr26HoU5UVz0mQuxoGLaoU+mtbXSI0bj9yeKxWJ2rxA5NodzwzC2ktoklOrpz8rqaKqvT6Q34PPKzAXEGiAg1PfSSpVEBCHltuYW5ObkuOFLaXWYfUv105+8trDue7e2TJ48KZyVmSl8UpVen6YpVVX42po1+M3FF+PFf/0Ls8eOBff1IT8ahS0lIAX6X38LVm4W+l7bBFYawrYAZlcvdRysb27Gm8XFOOOhhzBrwQKBYVXBjZfuCq/Clm9l+w4pf5IAJLZvb1a/ezDe/cPvLCzJzskBPnzCkInkECZTt2alZ42WV86vgFanMugYB5gc0jwKSGakQAQDhCCSoZ7+1rJY9ZsEsYRhnlx91oLF8bo6HTxiAQJCfS8sU++p7elP4AfPNuKp3Bn5/3jsVVH9wuu45bzjkZ+VCaUMpBQDRDVyRIl1xaUX5z3w4MMd13/imkJgqDOopblFdfX06u7TzlBNG5uynLWvhWeXlEAzoygjAyEpoY1B39om6L4EyHJbP7f19qJXKbzW3IwVeXm65OPX9s5asCBHpVIQlrVb0twbfKK//Sd37vjktVfnZefkyJRSsC0LbNxC2FIcqmS6UHj1PbliTvWHGPR51uokX8/wQ7zSAxOIRBhADglxJIFOY8Y3y//x2CqOVd/HKfs3a9Y8v3MvMkGAAAGhHghorXHTU2vQES3ApScfJRZt2oE/rXoVm+59BI988XJYXqGTRCLB3T29urV1hzbG8H/qn+vr7Oo2BQX5sre310TCEZGVlSmKi4rkmFEj7Ko5s6OFn7zG+tvXvoanb78dJ4waBQAozsiALSVUd59bRhBAW28vuh0HK956Cztmz8aXH31U/PbPf00+9tiTPQsWnJqltYHYD/Lz9d3f3PeHjumlR4fLZ86Iaq0R8qxoEoeyXlorgTo9JRYripL1E4Au8QutKqWUO6fQYB/3QWvbbRWilN8eRBBReci2f5REahuAB3fTYjhAgIBQDwR87XD5hm14pcfgE7PHIeWkcMzoHGzpnICXVrbgu7/8Q/8RUerf0dXN2nHYDoUoMxoRxcUl8suf/1zhz+66p6Pu5q8VTxg/LrSnrKWLfvQj/L2wEE994xs4ecQISCJPU3U5oaOvDz1KYdGmTdCnnYZPx+PIzMmh6y67pPCmm7/VXF5RFh41coS9rwW0jTGQUmLlqjX9r77+euqH37llxDstKP0+QABxPX1W9dEW4S+C5DSlHAOvb7vX0927fawJEBhsPU3M7G3rkq0x7CilBMAUPGYBAkI9mMt9b72/vbMH7X0pbO3qRXFGCG/u6IajNSzLQjcLa/bs8oyCoiIrPzd3F2eQ1h/Dw3/+v86bvnRjseM4LIQkYKiuycbg7P/3/5A7diyeuvpqLBg5EpaUKMzIQHcigT7HweKmJhRcdy0uuedesDFQSiE7J1t84pqr8n/80zvbbv3OLSN9otz7b3JF366ubn3vr3/XsfDrXylh5sOloLQAYMrKqo4ggccJYpxSyiEie9hv1EK4PTmZDYwxCm4LCltKy+tvb7wOBsxEJPdzkb+7kKx0qeBgSwbDj78/hY+HW+5BKFlAqO8NfGPv6JJc9DSvwt/fKEa+LbC9LwXLSWL7m2v5+NM/Io4++mjbJyvXg+6OT2MM5s+tzli0ZFnfE0/9p+e0U07K0npX0iMvAeD4K65A744d+M8Xv4gFEyYgw7bR6zhYtXUrtsViTmpWdef27c15I0eOsIS7vEXZzOmR6auODt/3wEMdV152cf7bWZo+6d7xs7vaLq49P3dESYn1Thvyvde3Y+HChXjggaVhstsfFEKMU0qpYWTKAMiyLKmNfs0YfpjZLJYstgFwKIQM5ahRRKKSGacS0TwhRMi1WMWesheG93XSb0dCtbW1Ehjo/74vREW1tbW7vQHxeJwx2I9oeHO/fSPBhQtFzTNuX6Q9kW/aOQcOuoBQD5I55OWvTx03Cp+YPgI/XPwcckaOgVQptK57DR+tKjXP//2RljdeXBL6+JWX5WdnZQl/nAshB2qOfvKaqwu+9o1vNZfPnBEpKSm2drc097OqPvSFL2Dnli1YevvtWDBtGtZt346madPw/+rrrdc3bsq846d3ttUcd2zGhxacmi2EQCrl8BUfvSj/q9+4ZfvqNa8kymZOj+yJIH2y/b+/P9qZm5crjz92fubhstSvra0VdXV1eubsqi8KaVUrx1Fpy/sBciEiY4z5ZoYtbl+yZEn/Hnb3DwALy2Nzq8DmM0LYlznKie7JqB9OMmPnzo0W9FE2h5wsIGQDgKU5IURqZ0NDQ1f69vvY+XMfGv3VSiCu4/E4YrGYnSAaGWE705E6md8c3VbfVJ/Yg0XPqKsz9R4pT55clZOdLfOlpIiS2ph+0Tl16ti2tOPv0u0zwAcP73mTvuHrIQLw4LMN+NuKV+E4CqfPmoZrT5kLozV+/9CfOp59blH/OWeekXXOWQtyfPISXiUnIQRWvLSq/5G//b3r2wu/sUe9kpkBZmhjcMfxx2P2q69iOTM+8tRTmDxnDgAgmUya3/7+wZ3tbe366is+mj9y5AjLGIPtzS3Od3/wox0//H7diGgkItIlBd8yFUJg/YaNqTt+dnfbj37w7ZFSSjrQlulBatJHALi0snKkpamRiHK9vutDlrwkBGBwxaoVSx4A3JbMnlXJaQRHw63H8ljVuVqLjpdXLqnHwoUCdXXGP+asWfNHa4tnw5hZMDyDBCYwYwQz8okQ9s+BmQ0BXSTEW2z4ZUh6TPVFHm1srO/xpYo9/a7y8rlj2OIfsmEL5HZ+B7FxoxLo0dUNS34DwMRi86Y5MDcQ6ETDZgIYZEkpmM0XVjYsvSudvNP/XRarriaIDzPMsWA+khl5RJDehesXRE1EtMwY+vPqFS88vh8TQYDDFPtqQgkAJjc3d7qUslZrzRkZGeLqq69GJBLxlvG0308yeXrqzImjccHcMlx4TAVik8YOkGX5zBnRuVVzov968qmePz3yt64xo0fZo0aOsPy4VGbGmNGj7FdfW5vcsnWbKj16Wnh3XnkiAhsDaVnImTgRf7n3XpReey2Ou+YaGK8Kv23bNGd2RTQzM0P8+ncP7HScFE85anI4OztLWpbE3x59rPu4Y+Zl+gSaXtAk5Tj87e//sPXzn7m+sLCwwGIc+HRS/5o888wzWLJkCWe6cbhNnZ2dv92PiXEIampqrKamJjN61NhrpZTnaq0NDTqawMzGsizJbG5ftWLpj2KxmL1t2zZuamoyjY2N6Y3kuLGxkb3P/PFCzdu2vNqyfXMTAKC+Pv1vXDJ61B8ty1oI4EQhxHSAxgLII6KIN4FbACwiYZOgLCIaLaSoEEQXCFtdNGLE6I7m7VtWYeFCkbbvIRbkuHHjJjDRXVLK6UKIGUKI6UQ0w7ZDR2ujOpq3bXmkfFbVDSzoYSHkMcxcDCAEsBRS2ob56eZtW14oLi6WTU1NxifD8srKipGjx/+KgFuFEMcRMAFANkC2f96CKAKikYJEjARfNmLUuBNHjB7z6tNPPfFWbW2tTLtWAT5AeN8FPiJAGwPDDPasSJ+MtNYoKSm2vv6VLxZfc9Xl+b/87f0d3/3hj1pbWlqVlBJSCjhK8bUfu7LgP/XP9W7estWRUuy2epNfVHrascdCjx+P0jPPHHAk+dak1hqzK8qj3/z6V0o2bfZ6WW1vdk4/9eRsozUef/LfPVLKAYvceCR35z2/aj/lxBMzj5g4IaS1PhxSST2Oq9cuceLD7Jmm6RwuhJBam+1Q0e8AEA0NDXofLWEDwHj64Z4uRtgYbbRSSa11yhiTMoYdY9hhZjX4MoqZtTHGKKW0UkqD+UjLtu4rj1V/w7N6xe4nISitVb9SjvJfWuuk0koRsKlsVvVF0rZ/aozJVMpRzMZ4fcc1wEyg4VlfumxW1eXE8nkCncHMrJSjjNHaGKO9c1XMrIwxio0xSjlaK22IUENEz8yYVX1ZPB7XvrYaICDUA28mCzHQUVSmLZV98tJao2zG9MhPbvvBqJml08P/b+G3W+77w0MdxjBsyyLbtum6q6/I/8md97QZwwPWKzMP1hr1uqBa4TBu+NOfMPmYY+AlaA05njEG0UiE3F5Wp2T95Of3tD362BNdX/3SjcWPPfV0T8uWzUnWGi1t7SyFwLP1z3Z3d3frc85akHMYhUgNLItnVFePAKOCmQlDrVMthACI/7JqVf3Ompoasb/63zBH0/CZVHs9D20hREhKGbIsabuvoXCjBRhe+JZkNsZxHEVCfLs8VnVaGnkPZXVjyA/5SnsPsTEWgBNBfKfWyjCzghv6xW74F2tmNuyFfLW2top4PK5nxqouEZa8zxiTqfVAXK7l1jWX0rIGT11aluX9XRKR0FppNiZiSbp/1pzqc+LxuF64cGHQU/wDBuuQf+qJBoiOiHDOWQtyTjrhuKz7Hniw4/obv7T10gsvyD3+2PmZM2dMj0w96sjQHx6K77zskgvz9iYST6ys3PMMM8RaLYsePW1K5Hf3/6H9p3f9oq32zNMyP/eb/0s6R1eHm5p30DhKonjLK+p/v/75wsMoRMo3uQTicS0VTYZALvtFCNIuvRutT/8BQCUlJQd2icoctu2QlTImxcwvs9EvgcQb2uhWAfQRYEGIYgaVAzhTSFlkjPYSkkkQ3BmTGQsBPJWu577dkPJWGMd6ESNGSmkNSjQEZiOlZYFTSgJAY2OjU1Z57BQyzr1Ga+ONy4G4XGlZwhi9Gsx/Ys3rICibmBeQEOe54bluLC8AzczCAL8qL59bUVdXt3UvOnCAgFAPoimdRnRZWZni+k9cU7h+w8bUvb/+Xcc/H3+y59qrr8j/+FVXFHzzW99tfnbxUseORO3evj6UFOZj5tFThzCF0Xq31faH/9txHI6Ew/TJaz9WuPKll/rueGq5Tsw5PWfe+CKMHTsGT7y6CevCXfmvN+/EzIkZrhRwmFzPmpYWqgcA1mOEtKCUMt5DP0AARmstbKyD6y0/UITqE/dbSqv/gZD3rXrxhca9kcqsWfMmGGHiQshKY7QBSIBIuPGuqJ4Zmzt9TcOSNftDTt4EwpZlCaP1S5rob8z0BtiQFJigtV5AoNTA5jr1LSlllhdS5j03bISwBIz5uerv+UJjY2Mq7RD3zpxdfa0QdDcb9ud2aYxRlm0XadI3AfhMbW2tiMfjARMFhPo+yQOeDGCMwaQjJoZ+8O2FI559fnHvrbfdsWNu1ZzoyaedXpzUTCMLC8HSwstvbMCbTW/h7FNPBIFAgnbbWG93TiQp5cCHFbNmZXS/6WDe+EKMzQpjdIaNLV3FWLR9K+56YjHuuu4CV144vGqbgkkU+g714eI2MyccY9oP9CEBUGdb87VNTU0JX59cv3697Wm0uxDiSy+90FQWq/4CAc+lGdHEzMqyLEsZVQ1gTU1NjUivdvV25yGEEMx8y7lnL/t2Xd0ux/3u1PnzswFgemz+kcTqHK01p006WggpDZuGqZPGfw4AeouLI/aWLQxMxpgx/VRfX/+LsllVp0hLXqiU0r5kYbRmMF8Si8Xq4vH4DrzzKI0AAaEeOBnA10mPP3Z+5jHzqjN+df+DvWTZ4tS55XA0oyA3B9lZWVj6YgNWN76G2TOn+1Yup1IpTiSS7nsyabq7e0xvX59JJBKmP5Hgvt5e7uvvN/2JpGFjuKOrm96g8XkTJowXozJC2NbVj9bufuRkRLG1Y5trRdPhJ4kRSO5JYAWzZiInjQgPGKk2NTUlYrGY3dDQ4Hhaq16wYEF4+/btOdrKyg7D2MxMCWNISGkEI0drpYhgpVm5HrPKyfunNrC2LEtqrX+zesWyug+fuVDU1Dxj+bJGS0sL1dfX67WLFveAAAvqFCFlNN06HQgV1Op7aWFQ3vs6rFs3cCHvYeDC9EtrjNFSWoXK8HEAHvGs1CCUKiDU959YiciP0aQ5lZVZGZmZcDRDKY1IOATlOJgwbiyeXbLcWb50WVfKcWCMYTBDSElSWmTZEhnhiIhGo5SZmSHC4bDIy82hzIxMkZWdJSKRsAhbFi3+Y714vLEJb40uQmtPPwwRdmx8E+fHjnClBDaQhxmpGuaU2A1XuhEQsO2UiKRx7IEiVQHANDQ0OLMqK+ewlmcw8/xtLR1HsLCLyaSiKY8wJQEwCoZIeGSKoVovAWTy98soJxJa64Ri8T0AorGxkXZXuKXmhBqrHvWKgdhwNZ6IpNaaCdbkmRVVFxgii2iwp41gIQCkmFDKrv4vh54D2IBmA3ikpaUlqHcQEOqhpa8ygB1t7chWGp35uYiEQtjasgPMjGQyhazMTOvMk47PDYdCFImEKRQKkWVZ+zWQbzp5Fi6/7wm80DwCWZEwdmx8E0dGDD59xnFgxmETLgUAvjUmYFq9YI/dnLwIi5AsArARWAig7oCRaXl59US2xe3GmHOFFASw24YGuw97w14bGXJofwhVCCE0m1WNK5asA0BeMsIuGJQPaIKfMLbLnG7RrdZAOLfYrb5htN6tOcDg8QEFfbDwgQjb8Nd/o4oLsaFpE7btaMe6TVvQ058AEWHtG+swY9oUGjVyhFVQkC8zMjKEZVnka7HGa/s88PI+GxJ+ZQzmTTsCf7rmDJydpzC1fxuuix2Bv371YxiTnzNgMR8uiMdLXYYQ1matja8Ncpo+qaUUQhtVCoBqap4RB2i88axZcyfDwrOS6DxmhlKO0kppZjZewZWB1Uf664CMFWZDJEAG6wA39fZthhYInOEu8XfdQCvtaK1Te3wp7QCs019EMGDWxJQNAPUHOoIiwOFpoR4q7Y+F60BB6ZQj8cbGTVj24ksYNXIElFJ44831KCrIQ2zmdBjPC59eMHpfH1Q/kL9i0jjcdd24Xa7De0WmB+44dW6pGafvDchwCxGNGHY/XTJhnAHgvgMYNkVG6HuEsMZp7aQACqXXDrAsW2itEsy8nYgSYBCDDYEiACYCByKQggGBTsDVS99+azJ72khKYb+D50YKKaGMzgooKCDUgQf7kApi987n3NNPxour1+DNjW9BaY25s8pQNWumWy3/XT6NflEXf3lv2AwkJLxXSCSG1OrQ745VFopVq+p2zpxdtUwKcVZ66NSARkh0ZllV1RHxeHwj3FTlfT0mDXG2uP2pdFmsupqITvK83qEh5E2UNEZ/R7J4SOu+bb19fcpxHCoqKtJaRkqNo5YTsQ2861sJP8z27TaCG6zaTZaF4UEczKwN8zIwJ/crvINgjNG2IDS4y4XSwEL9LyNUV28TIuW9o7+/Hzt37kROTs6hwac+6QlCVUUZqirK9rjNu7WG/R29lw4o8qzwjRs3wrIsr60VN6ctpfebXGtqnhH19TAC4iEAZ+/COMxaSpmltfkRgPNra2sRByT27pGmmpoaWV9frzwyJQA8GPfKx5EQQ0rd+TUDlNbfXrNi2feG76+pqYkr5swJCSEt5gNBpvt6fdwwLBL0JoaW5/PKNRDbEB9rWPHCa+9ytRAE9n9AsK+MwO7yRm42xhjLsmRbWxvWrVs3oC8eSvDrArjndvhP/n4WViKRwLp16xAKhfzMsdffzVzh5fKTkwj/VWu9XrjZEyaNxKVSSgsS55XH5n4/Ho9rj0xFbW2trK2tlTU1NVZNTY3lpX4KAFxfX68mL1gQnjVn7rfKZ1eeCwCtrSVeG1saPfx8iUgaY2BJ64lYLGbX1NRY3jZUWlvr1cQVxwohiZnf8/AiAi/F0ALSxMxKSmk5rM8CgAULFoTTthn+Ev518vc5du7c6Hs1MQQ4RC3USCSyuq+v71Up5XSttVm0aJE46aSTDhktdYgVOagEHPbwi1e//PLL2LJlC4fDYWmMYWZ+wt/knXK1V/SjpyI292YS4gGlHJ1eccoNRFdGWNZNZXPmThbKLFy5clnjnrJ7Zs2aNVpR6Fxqab9ehsPTHYcvB4BUqttrowDatR4/G5JCKCdVvGZlgzN5wYJwbW0tt7S0UH08norFYkUK9DljhgTWH3T4xWNUUvxbhnSHECLPT9H1JgEmos/HYrGHH3vssU2+db6bfQy04Z5ZVTVWGnGDcczIzcDVCIL6/2sJVTY2NqYmTJjwH2PM9OzsbHPfffeJiy++GEcddRQOs8Igh5V16pPqrbfeCsdxOBqNktZ6AxGtSJ/w3gn8ykfxePwPZbGqM23bvtRxlEMEO21WElopY1nWBUbSOeWzq//DhMXQ3KTJJIWgbGI5ETCzNHiuJUWBMQbKcTTtalG+tRs9w/UTSbGwurp6xdLHHmv24+JnxGLTFKxfE9EEo7VJL+DyXlx+79o0l82u/K2U1ufTCnATs2EiOVrBeqKsct7npk4c+1Q8Ht8lnrW0snJkmEUVM51nNJ9l2VZRMpl8Ap6O7TsIA/z3EGr6sv8XWutP2bZNXV1dfO2119Lf/vY35OTkQCkFy7KCq3oALVPvmmPhwoV46qmnUFhYaJjZAvALL3VzfxxFeyJVA0DY0Nc6Soy2bOsEjzgGyu8RkfAdSULKBQJYAAFIyDQjyy1io5TSABnLErZP9aHQJk/3Rb0xDBpKjMIYzULI6n5lVpTPrnyKWbRDmIkMOo2ADK/U4nse5jdwbch8z9HqfCnlBK21R6pExmgWUk4l5sdeX79pVXlF9WqWaCOwYIMiEjSJNU9hIQpIANDG6yBLqWCE/3cTqgEg169fv2bChAk/YuavZmVlOa+88op92WWX4d5778XIkSPfE02V0mqY7quVd6jpvPvzG7/73e/i5z//OQoKCrQxxmLmNYlE4qc4cJWKGAAaGhr6ps6ff040qe+zbPtcoxQMs/LIT/ixqlopvyo/DbOQyWshLTytk41xx1hxcbEBINasWLqiPFb1D2lZZ2nlhk35XzVGGyIxWkh5hcez0FobCIJhs5RARxMhZzeVsQ6qlQqAGhoadlRUzKmFpCeklHlaG4cIkogEu4OLhBDlZFN5mvYEr9oUtFbGu1d7rN8a4PDH/t5YA0BoreuYeYkxxs7JyXEWL16Ms846C//85z8H9L6D+RpeMf/tyNQP8TqcXkIIvP7667jmmmtw2223IScnRzOzBJAgomubm5t73+1yfzfEIdYuXty9smHpeUabL4BEm2XZlkeozOzWCXVLy5KgQQgMtixhIiIprRCISAh0AYOZWe4sbn/aaL1BSivk7dMriuLGE7kB8SqplHYsyxJs8C8p7U8ALPztve9oZlbphaCHDG4hOH37Id+h/ZqIDAC5cuWLyzXjFAZWW7ZlE5EAs/HqqGqtjaOUdtRAsL8aKJwNN+XVEkKELMu2ANgB/fx3W6gDs/XmzZv7J0+eXKuU+hczz8jNzTVbt27FVVddJSoqKlBeXo6jjz4aJSUlB9xq01pj8uTJKC0tfduAer9dSW9vL5577jk4jnNIZzMREXp6erB27Vq8/PLLePHFF9HV1cUFBQXaW+aniOjyDRs2LD0QS/09EAcBwKqGJT+eNWveXwz0JwDUCiEm+w4h9mKXfBt1MFnCDe1io5uZzGPaMb9eM3niIjQsS+8oKhoaFm0qq6o62Rj+hbSsk8mtQerGeQq3YIvb5kazMeYXO7PDny3oShwhLSsrff5gZmnZFpKpZObufowSQkqyosNiR6Vl2XBSqcz9vDYatbVyTTzeUFpaekwomnsDCNcIKY8caFvuxSi7NxNDkki8FNQEgDWOo55k0EPuhoF++kHCO2UXAcBMmTKlKJVK3U1EH/HiJLm3t1enUilvLB1Y9vL3Z1kW7rzzTnzkIx/ZozPMJ9Pt27fjoosuwqpVqyCl5EMtImF3k5Yxhm3bRkZGBlmWJbwQsDeZ+dqmpqanDxKZDkF6M7lYLJahYFURxFzDqgygMSDKBRAGQxOhm43ZLqR8xRhakqDUktcbGna83fgBgLLKeWcRm3PBKGVQHmAUgZohxHKpzZ9XrFjaAAAzZx6bj1DqZGZOj0BggG0Bs25VQ8OyNDGXAPDkqqqcqMZpu/sOIF9b07BkBfbfyz547mVlmQhnHEeGjzPMMwWJEmbOAlgAlAShiw1vl1K8wUavZomVq5cvfwOBVz8g1L0NrAkTJpxHRHUAZkopkT5jH1CmYYZlWWhubsZFF12Ee+65Z7eE6pNpV1cXamtrsXz5chQWFhpjjDgc8u3Te2ox8zYi+oXW+o5NmzZ1vBdkmn6PveB2tTvCfeWVV2Q0GuWGhgZnd38H9tqPfhf9t7S0NFRcXGyGHU9gDz3v389b5CcvDP9DLBaz+/v7afr06XpPv72mpsbywqiCgP6AUHf5vt9r3JowYcIcAOcTUczrIDnSI4B360Twv5/rJxV87nOfwy233LILoaZV28fll1+OJ554AoWFhUZrLYwxnUSkcGgGVLNHHh1EtJWZm4gonkqlnt+6dWubt817SaZD7nNtba1oaWkhr3202YXgamtlzd7+vhdLeDfE6xH5CSYti2jIOaS/74Wc3sl33tF1qS8p4d1kkA2/bnwITg4BDiFCxV4edGvChAlZjuNI4aYavjNRzxgSQrCUMgTgWdu2j2ptbTXf+c53xA033DCEUH1vvpQSn/70p/H73/8excXFyhhjGWN+D+DLjuM4gOuwONRuhjGGmLl/27Ztfbu5vuYQexBp2GRwIPfJH5BnKiDO/zIcqKBRP2fb16oMANXU1LTzQJ1ocXFxVkZGRo6XhkmjRo3aRQ7wyfSWW27B/fffj5KSEp9MH584ceLVu1uiHcIPZfq1PBSrufNhss8PwnUJ8F9GqP5A0gfB+hUATCQSGUFEOb6OWlRUNNy6g5QSP/nJT/DjH/8YxcXF2iPTZbZtX+ilAEocHroVH6IkGiBAgPeIUA/mTM1SyiIAYa01h0Ihys93u14Q0UCG1oMPPohbbrnFzyaSzLyOmc9dt25dF95hRaYAAQIE2B/r77CAMabI6wXEmZmZKCwsdLUGrWFZFp544gnceOONyMnJMQAEM7cy89mbNm3adhhZpgECBAgI9aDCzyUf4QX2c3Z2NnJzc2GMgW3bWL58Oa699lqEQiEjhCBm7mHmDzc1Nb2G988zHiBAgIBQD9ETFWKUmz1jODc3F6FQaCA988orr4TjOBwKheClAV7U1NT0gidpBGQaIECAgFDTobUe7aee5uXlIRQKYdu2bbj88svR1tbG0WjUMLNg5muampr+6ZGpCm5xgAABAkIdhO/cGgkAjuPQ+PHjkUgkcPnll+PNN9/krKws7TmhbmpqavpNQKYBAgQICHX3MABAREXeOzIzM/H5z38ey5YtQ15enl845LaNGzfeGizzAwQI8H6BDoPzYwCh8ePHrxRCHM3MJisrS7S3tyMSiSgAljHm901NTZfj0MwoChAgQGChHjoYP358JhEV+iTb1dWFcDjsk+njEydOvBqDxTYCMg0QIEBAqHuxoPOJKNsvfCKE0EQ0PAsKAZkGCBAgINS3IVRjTBGAsPeZIaLhWVB+xasAAQIECAh1r6xKNMrrU5T0qsYHWVABAgQICHU/wQBgWdYGZoaUMgygN8iCChAgwKEIeRgQKu3cubM5Nzf3DSFEQmv92U2bNr0QkGmAAAEC/HdY1gECBPgvBB1G5yrTrNZAMw0QIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIMA7xP8HPU0pHizhRpIAAAAASUVORK5CYII=" alt="AICrowdCare"></div>
+    <div class="byline"><strong class="name">AICrowdCare Inc.</strong><br>We use AI to process Location Data and Model Ground Truth in Near Real-time so You can Manage Crowds Efficiently.</div>
+    <div class="legal">© 2026 AICrowdCare Inc. · All rights reserved · Toronto, ON, Canada</div>
+  </div>
+  <div class="col">
+    <h5>Leadership</h5>
+    <p><strong class="name">James Rodmell</strong><br>Founder &amp; CEO</p>
+    <p><strong class="name">Stewart Doma</strong><br>Co-founder &amp; CFO</p>
+    <p><strong class="name">Dr. Julian Yeomans</strong><br>Chief Scientist · York · Schulich</p>
+  </div>
+  <div class="col">
+    <h5>Contact</h5>
+    <p class="mono"><a href="mailto:info@aicrowdcare.com">info@aicrowdcare.com</a></p>
+    <p class="mono"><a href="https://www.aicrowdcare.com" target="_blank" rel="noopener">www.aicrowdcare.com</a></p>
+    <p style="margin-top:10px;"><strong class="name">Toronto, ON, Canada</strong><br>Global offices Q4 2026:<br>New York · Johannesburg<br>London · Eastern Europe</p>
+  </div>
+</footer>
+
+<script>
+// ============================================================================
+// AICrowdCare POC · Calgary Stampede Saturday 12 July 2025 Replay
+// ============================================================================
+
+const MAP_W = 1200, MAP_H = 780;
+const map = document.getElementById('stampede-map');
+const unitLayer = document.getElementById('unitLayer');
+const densityLayer = document.getElementById('densityLayer');
+const routeLayer = document.getElementById('routeLayer');
+
+// STATIC: EMS stations. Position A = pre-AICC (random/static). Position B = AI-optimised.
+// On page load, units slide from A -> B, visually demonstrating "re-staging".
+const ems = [
+  { id: 'E1', a: [210, 200], b: [240, 260], label: 'E1' },   // Saddledome entrance
+  { id: 'E2', a: [900, 200], b: [940, 290], label: 'E2' },   // Coca-Cola stage
+  { id: 'E3', a: [720, 240], b: [700, 370], label: 'E3' },   // Grandstand backstage
+  { id: 'E4', a: [500, 500], b: [640, 520], label: 'E4' },   // Midway heart
+  { id: 'E5', a: [400, 600], b: [330, 470], label: 'E5' },   // BMO
+  { id: 'E6', a: [850, 620], b: [890, 500], label: 'E6' },   // Nashville North
+  { id: 'E7', a: [300, 580], b: [300, 610], label: 'E7' },   // Agri zone
+  { id: 'E8', a: [600, 160], b: [600, 160], label: 'E8' },   // Gate LRT
+  { id: 'E9', a: [980, 400], b: [1010, 385], label: 'E9' },  // Gate 9
+  { id: 'E10',a: [200, 420], b: [185, 385], label: 'E10' },  // Gate 1
+  { id: 'E11',a: [700, 450], b: [770, 460], label: 'E11' },  // Midway north
+  { id: 'E12',a: [580, 620], b: [580, 625], label: 'E12' },  // Midway south
+];
+
+// Security posts
+const security = [];
+const secAnchors = [
+  [180,380],[600,140],[1020,380],[340,240],[720,340],[650,540],[890,500],[940,250],
+  [350,465],[300,595],[480,380],[820,380],[220,540],[970,550],[160,260],[1040,260],
+  [400,180],[800,180],[450,680],[750,680],[250,130],[900,130],[550,250],[700,250],
+  [380,510],[800,510],[580,400],[730,400],[230,450],[1010,450],[410,630],[820,630],
+  [550,180],[850,280],[310,350],[1030,320],[520,370],[720,560]
+];
+secAnchors.forEach((p, i) => security.push({ id: 'S' + (i+1), pos: p }));
+
+// Crowd hotspots keyed to time-of-day. Format: [time_minutes_from_05:00, [x, y, intensity]...]
+// intensity drives opacity of the density blob
+// t=0 → 05:00, t=540 → 14:00 (2pm), t=720 → 17:00 (5pm peak), t=1140 → 00:00
+const crowdSchedule = {
+  // Pre-gate: empty
+  0:   [],
+  60:  [[180,380,0.3],[600,140,0.4]],  // 06:00 staff + early arrivals LRT
+  180: [[600,140,0.6],[180,380,0.5],[1020,380,0.45]],  // 08:00 gates pour in
+  300: [[340,240,0.5],[350,465,0.5],[650,540,0.6],[600,140,0.4]], // 10:00 spread
+  420: [[650,540,0.8],[350,465,0.6],[720,340,0.6],[890,500,0.5]], // 12:00 midway heavy
+  540: [[650,540,0.9],[890,500,0.7],[720,340,0.7],[340,240,0.6],[940,250,0.5]], // 14:00
+  660: [[720,340,1.0],[650,540,0.95],[890,500,0.8],[940,250,0.7],[180,380,0.4]], // 16:00 - peak grandstand build
+  720: [[720,340,1.0],[650,540,1.0],[890,500,0.95],[340,240,0.9],[940,250,0.85]], // 17:00 max crush risk
+  840: [[340,240,1.0],[720,340,0.8],[890,500,0.9],[650,540,0.7]], // 19:00 Saddledome concert
+  960: [[340,240,1.0],[720,340,0.9],[890,500,0.85],[650,540,0.8],[940,250,0.6]], // 21:00 fireworks build
+  1020:[[720,340,1.0],[340,240,1.0],[890,500,0.7],[650,540,0.7]], // 22:00 fireworks
+  1080:[[180,380,0.9],[1020,380,0.9],[600,140,0.8],[650,540,0.3]], // 23:00 egress
+  1140:[[600,140,0.4]] // 24:00 done
+};
+
+// Phase text by time
+function phaseFor(t) {
+  const mins = t;
+  if (mins < 60) return 'Pre-gate · Staff briefing · 71°F / calm';
+  if (mins < 180) return 'Gates opening · 74°F · arrivals from LRT';
+  if (mins < 300) return 'Morning builds · Parade aftermath · 78°F';
+  if (mins < 420) return 'Midway peak lunch · 86°F · alcohol sales rising';
+  if (mins < 540) return 'Rodeo build-up · 92°F heat index · bar velocity +18%';
+  if (mins < 660) return 'Rodeo + Midway · 95°F · sentiment: jubilant';
+  if (mins < 720) return '⚠ PEAK DENSITY · Grandstand build · heat + alcohol compound';
+  if (mins < 840) return 'Evening show · concerts pre-load · 88°F cooling';
+  if (mins < 960) return 'Saddledome concert · Nashville North peak';
+  if (mins < 1080) return 'Fireworks · full park density · 75°F';
+  return 'Egress · LRT surge · 71°F · closing';
+}
+
+// ============================================================================
+// INIT: place EMS units at "pre-AICC" positions, then animate to optimised.
+// ============================================================================
+function placeUnits() {
+  unitLayer.innerHTML = '';
+  const rect = map.getBoundingClientRect();
+
+  // Security (static)
+  security.forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'sec-unit';
+    el.textContent = '●';
+    el.dataset.id = s.id;
+    const [x, y] = svgToPx(s.pos[0], s.pos[1]);
+    el.style.left = (x - 11) + 'px';
+    el.style.top = (y - 11) + 'px';
+    unitLayer.appendChild(el);
+  });
+
+  // EMS start at "a" position
+  ems.forEach(u => {
+    const el = document.createElement('div');
+    el.className = 'ems-unit';
+    el.textContent = u.label;
+    el.dataset.id = u.id;
+    el.id = 'ems-' + u.id;
+    const [x, y] = svgToPx(u.a[0], u.a[1]);
+    el.style.left = (x - 11) + 'px';
+    el.style.top = (y - 11) + 'px';
+    unitLayer.appendChild(el);
+  });
+
+  // After brief pause, animate to optimised (b) positions
+  setTimeout(() => {
+    ems.forEach(u => {
+      const el = document.getElementById('ems-' + u.id);
+      if (!el) return;
+      const [x, y] = svgToPx(u.b[0], u.b[1]);
+      el.style.left = (x - 11) + 'px';
+      el.style.top = (y - 11) + 'px';
+    });
+    logFeed('AI', 'EMS re-staging complete · 12 units optimised against 4.2B scenarios');
+  }, 1200);
+}
+
+// Convert SVG coords to pixel coords on the overlay
+function svgToPx(sx, sy) {
+  const rect = map.getBoundingClientRect();
+  return [ (sx / MAP_W) * rect.width, (sy / MAP_H) * rect.height ];
+}
+
+// ============================================================================
+// DENSITY RENDERING
+// ============================================================================
+function renderDensity(t) {
+  // interpolate between nearest two keyframes
+  const keys = Object.keys(crowdSchedule).map(Number).sort((a,b)=>a-b);
+  let kLo = keys[0], kHi = keys[keys.length-1];
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (t >= keys[i] && t <= keys[i+1]) { kLo = keys[i]; kHi = keys[i+1]; break; }
+  }
+  if (t >= kHi) kLo = kHi;
+  const ratio = kLo === kHi ? 0 : (t - kLo) / (kHi - kLo);
+  const loBlobs = crowdSchedule[kLo], hiBlobs = crowdSchedule[kHi];
+
+  // simple approach: render hi blobs at intensity between lo and hi
+  densityLayer.innerHTML = '';
+  const blobs = hiBlobs.length >= loBlobs.length ? hiBlobs : loBlobs;
+  blobs.forEach((b, i) => {
+    const [x, y, hiI] = b;
+    const loI = (loBlobs[i] ? loBlobs[i][2] : 0);
+    const intensity = loI + (hiI - loI) * ratio;
+    const r = 80 + intensity * 60;
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', x);
+    circle.setAttribute('cy', y);
+    circle.setAttribute('r', r);
+    circle.setAttribute('fill', intensity > 0.7 ? 'url(#densityA)' : 'url(#densityB)');
+    circle.setAttribute('opacity', Math.min(1, intensity));
+    densityLayer.appendChild(circle);
+  });
+  return blobs.reduce((m, b, i) => {
+    const hiI = b[2], loI = (loBlobs[i] ? loBlobs[i][2] : 0);
+    return Math.max(m, loI + (hiI - loI) * ratio);
+  }, 0);
+}
+
+// In-park crowd counter (rough)
+function crowdAt(t) {
+  // Saturday profile: slow rise, peak ~17:00 at ~140k concurrent, egress
+  if (t < 60) return 200 + t * 50;
+  if (t < 180) return 3000 + (t - 60) * 450;
+  if (t < 420) return 57000 + (t - 180) * 280;
+  if (t < 720) return 124000 + (t - 420) * 60;
+  if (t < 1020) return 142000 + (t - 720) * 20;
+  return Math.max(5000, 148000 - (t - 1020) * 1100);
+}
+
+// Response time curve (synthetic, shows AI dispatch advantage)
+function emsTimeAt(t) {
+  // baseline mean rises with density; optimised AI dispatch holds steady
+  const density = renderDensity(t);
+  const baseline = 5.2 + density * 3.0; // minutes
+  const optimised = 3.0 + density * 0.9;
+  return { baseline, optimised, saved: baseline - optimised };
+}
+
+// ============================================================================
+// CLOCK & MAIN LOOP
+// ============================================================================
+let currentMin = 0;  // minutes from 05:00
+let playing = false;
+let cardiacTriggered = false;
+const SLIDER = document.getElementById('timeSlider');
+const CLOCK = document.getElementById('clock');
+const PHASE = document.getElementById('phase');
+
+function fmtClock(t) {
+  const totalMin = 300 + t; // 05:00 + t
+  const h = Math.floor(totalMin / 60) % 24;
+  const m = totalMin % 60;
+  return { h: String(h).padStart(2,'0'), m: String(m).padStart(2,'0') };
+}
+function updateClock() {
+  const { h, m } = fmtClock(currentMin);
+  CLOCK.innerHTML = h + '<em>:' + m + '</em>';
+  PHASE.textContent = phaseFor(currentMin);
+  SLIDER.value = currentMin;
+  tick();
+}
+
+function tick() {
+  const { baseline, optimised, saved } = emsTimeAt(currentMin);
+  const peakDensity = renderDensity(currentMin);
+
+  // metrics
+  document.getElementById('cntCrowd').textContent = Math.round(crowdAt(currentMin)).toLocaleString();
+  document.getElementById('mEmsTime').innerHTML = optimised.toFixed(1) + ' <em>min</em>';
+  document.getElementById('mEmsDelta').textContent = 'Baseline: ' + baseline.toFixed(1) + ' · Saved: ' + saved.toFixed(1) + ' min';
+  document.getElementById('mEmsDelta').className = 'metric-delta down';
+
+  const densityPM2 = (peakDensity * 4.2).toFixed(1);
+  document.getElementById('mDensity').innerHTML = densityPM2 + ' <em>p/m²</em>';
+  const densEl = document.getElementById('mDensityNote');
+  if (peakDensity > 0.85) { densEl.textContent = '⚠ Approaching crush threshold'; densEl.style.color = 'var(--crit)'; }
+  else if (peakDensity > 0.6) { densEl.textContent = 'Elevated · monitor'; densEl.style.color = 'var(--warn)'; }
+  else { densEl.textContent = 'Crush threshold: 5.0'; densEl.style.color = 'var(--text-faint)'; }
+
+  // survival metric
+  const survLift = (saved * 8.5).toFixed(0);
+  document.getElementById('mSurvival').innerHTML = '+' + survLift + '<em>%</em>';
+
+  // sim rate flutter
+  const flutter = 140000 + Math.round(Math.sin(currentMin / 9) * 12000) + Math.round(Math.random() * 8000);
+  document.getElementById('simRate').textContent = flutter.toLocaleString();
+
+  // automatic events
+  if (currentMin === 540 && !logged540) { logged540 = true; logFeed('WARN', 'Density spike · Midway sector · heat + alcohol compound detected'); }
+  if (currentMin === 620 && !logged620) { logged620 = true; logFeed('AI', 'Predictive: Grandstand backstage congestion in 14 min. Re-vectoring E3.'); }
+  if (currentMin === 660 && !cardiacTriggered) {
+    // subtle prompt
+    logFeed('INFO', 'Clock at 16:00 · Peak risk window engaged');
+  }
+}
+
+// ============================================================================
+// FEED
+// ============================================================================
+const feedBody = document.getElementById('feedBody');
+const feedCount = document.getElementById('feedCount');
+let feedEntries = 0;
+let logged540 = false, logged620 = false;
+
+function logFeed(level, msg) {
+  const { h, m } = fmtClock(currentMin);
+  const entry = document.createElement('div');
+  entry.className = 'feed-entry ' + (
+    level === 'CRIT' ? 'crit' :
+    level === 'WARN' ? 'warn' :
+    level === 'OK'   ? 'ok'   :
+    level === 'AI'   ? 'ai'   : ''
+  );
+  entry.innerHTML = '<span class="ts">' + h + ':' + m + '</span>' + msg;
+  feedBody.insertBefore(entry, feedBody.firstChild);
+  feedEntries++;
+  feedCount.textContent = feedEntries + ' entries';
+  while (feedBody.childElementCount > 40) feedBody.removeChild(feedBody.lastChild);
+}
+
+// ============================================================================
+// PLAYBACK
+// ============================================================================
+let playInterval = null;
+document.getElementById('btnPlay').addEventListener('click', () => {
+  playing = !playing;
+  document.getElementById('btnPlay').textContent = playing ? '❚❚ PAUSE' : '▶ PLAY';
+  if (playing) {
+    playInterval = setInterval(() => {
+      currentMin += 6; // 6 sim-minutes per real second = 19hr compressed to ~3.2 min
+      if (currentMin >= 1140) { currentMin = 1140; playing = false; document.getElementById('btnPlay').textContent = '▶ PLAY'; clearInterval(playInterval); }
+      updateClock();
+    }, 100);
+  } else {
+    clearInterval(playInterval);
+  }
+});
+
+document.getElementById('btnReset').addEventListener('click', () => {
+  currentMin = 0; cardiacTriggered = false; logged540 = false; logged620 = false;
+  feedBody.innerHTML = ''; feedEntries = 0; feedCount.textContent = '0 entries';
+  document.getElementById('scenarioChip').classList.remove('show');
+  document.getElementById('cntIncidents').textContent = '0';
+  document.getElementById('mIncident').textContent = '0';
+  document.getElementById('mIncidentNote').textContent = 'Normal ops';
+  document.getElementById('mIncidentNote').style.color = 'var(--text-faint)';
+  routeLayer.innerHTML = '';
+  const e3 = document.getElementById('ems-E3'); if (e3) e3.classList.remove('responding');
+  placeUnits();
+  setTimeout(() => {
+    logFeed('AI', 'System initialised · 4.2B overnight simulations loaded');
+    logFeed('OK',  'All data layers nominal · 12 EMS + 38 security positioned');
+    updateClock();
+  }, 100);
+});
+
+SLIDER.addEventListener('input', e => { currentMin = parseInt(e.target.value); updateClock(); });
+
+// ============================================================================
+// CARDIAC EVENT · THE HERO MOMENT
+// ============================================================================
+document.getElementById('btnTriggerCardiac').addEventListener('click', () => {
+  if (cardiacTriggered) return;
+  // Jump to 16:00
+  currentMin = 660;
+  updateClock();
+  cardiacTriggered = true;
+
+  setTimeout(runCardiacScenario, 400);
+});
+
+function runCardiacScenario() {
+  // Incident location: GMC Stadium backstage (roughly 700, 370 in SVG)
+  const incidentSvg = [715, 365];
+  const [ix, iy] = svgToPx(incidentSvg[0], incidentSvg[1]);
+
+  // Show chip
+  const chip = document.getElementById('scenarioChip');
+  chip.classList.add('show');
+
+  // Drop marker
+  const marker = document.createElement('div');
+  marker.className = 'incident-marker';
+  marker.textContent = '♥';
+  marker.id = 'incidentMarker';
+  marker.style.left = (ix - 18) + 'px';
+  marker.style.top = (iy - 18) + 'px';
+  unitLayer.appendChild(marker);
+
+  document.getElementById('cntIncidents').textContent = '1';
+  document.getElementById('mIncident').textContent = '1';
+  document.getElementById('mIncidentNote').textContent = 'CARDIAC · backstage GMC';
+  document.getElementById('mIncidentNote').style.color = 'var(--crit)';
+
+  // Feed sequence
+  const seq = [
+    [0,    'CRIT', '⚠ SOS triggered · Stampede App · user "J. Harris" (spouse)'],
+    [600,  'AI',   'Geolocation fused: GPS+BLE → Backstage R3, GMC Stadium · ±0.8m'],
+    [1100, 'AI',   'Cascading triage engaged · asking: "Is he breathing?"'],
+    [1600, 'AI',   'Triage ⟶ PRIORITY 1 · suspected cardiac arrest · ALS dispatch'],
+    [2200, 'AI',   'Nearest unit: E3 (pre-positioned 210m closer · Monte-Carlo optimum)'],
+    [2500, 'OK',   'E3 acknowledged · route computed avoiding Midway chokepoint'],
+    [2700, 'AI',   'AR wayfinding overlay transmitted to E3 smart-glasses (prototype)'],
+    [4200, 'OK',   'In-app CPR guidance live · compression rate 108/min detected'],
+    [5400, 'OK',   '✓ E3 ON-SCENE · elapsed 3:12 · AED deployed'],
+    [6600, 'OK',   'ROSC achieved · transport to Foothills · patient stable'],
+    [7800, 'AI',   'Counterfactual: status quo arrival = 7:24 · 4:12 saved · +35% survival'],
+  ];
+
+  seq.forEach(([delay, level, msg]) => setTimeout(() => logFeed(level, msg), delay));
+
+  // Animate E3 to incident
+  setTimeout(() => {
+    const e3 = document.getElementById('ems-E3');
+    if (e3) {
+      e3.classList.add('responding');
+      const [ex, ey] = svgToPx(incidentSvg[0] + 20, incidentSvg[1] + 10);
+      e3.style.left = (ex - 11) + 'px';
+      e3.style.top = (ey - 11) + 'px';
+    }
+    // Draw route line on SVG
+    const e3Unit = ems.find(u => u.id === 'E3');
+    const routePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    // synthetic waypoint route (simulating crowd-aware routing)
+    const [sx, sy] = e3Unit.b;
+    const d = `M ${sx} ${sy} Q ${sx + 5} ${sy + 10}, ${sx - 5} ${sy - 5} L ${incidentSvg[0]} ${incidentSvg[1]}`;
+    routePath.setAttribute('d', d);
+    routePath.setAttribute('class', 'route-line');
+    routeLayer.appendChild(routePath);
+  }, 2800);
+
+  // After success, update survival metric with bigger number
+  setTimeout(() => {
+    document.getElementById('mSurvival').innerHTML = '+38<em>%</em>';
+    document.getElementById('mSurvival').style.color = 'var(--success)';
+  }, 6800);
+}
+
+// ============================================================================
+// LAYER TOGGLES (cosmetic, for demo feel)
+// ============================================================================
+document.querySelectorAll('.layer-toggle').forEach(tog => {
+  tog.addEventListener('click', () => {
+    tog.classList.toggle('active');
+    const state = tog.querySelector('.state');
+    state.textContent = tog.classList.contains('active') ? 'ACTIVE' : 'OFF';
+    const active = document.querySelectorAll('.layer-toggle.active').length;
+    document.getElementById('layerCount').textContent = active + ' / 6';
+    logFeed('INFO', 'Layer ' + tog.dataset.layer.toUpperCase() + ': ' + (tog.classList.contains('active') ? 'enabled' : 'suppressed'));
+  });
+});
+
+// ============================================================================
+// BOOT
+// ============================================================================
+window.addEventListener('load', () => {
+  placeUnits();
+  setTimeout(() => {
+    logFeed('AI', 'System initialised · 4.2B overnight simulations loaded');
+    logFeed('OK', 'All data layers nominal · 12 EMS + 38 security positioned');
+    logFeed('INFO', 'Replay ready · Saturday 12 July 2025 · 05:00 AM local');
+    updateClock();
+  }, 300);
+});
+window.addEventListener('resize', () => { placeUnits(); });
+
+// ============================================================================
+// LIVE DEVICES — 26 moving figures with pseudo lat/long readouts
+// Centroid: Stampede Park (51.0375°N, -114.0528°W)
+// Cadence: 500ms, independent of play/pause
+// Respects Crowd Density layer toggle via MutationObserver
+// ============================================================================
+(function liveDevices() {
+  const STAMPEDE_LAT = 51.0375;
+  const STAMPEDE_LON = -114.0528;
+  // Rough SVG-viewBox → lat/lon scaling for the ~1200x780 park extent
+  // (Stampede Park is ~600m N-S × 400m E-W; 1 degree lat ≈ 111km, 1 degree lon at 51°N ≈ 69.8km)
+  const LAT_PER_PX = -600 / 780 / 111000;      // negative because SVG Y grows downward
+  const LON_PER_PX =  400 / 1200 / 69800;
+
+  const peopleLayer = document.getElementById('peopleLayer');
+  const stampedeMap = document.getElementById('stampede-map');
+  if (!peopleLayer || !stampedeMap) return;
+
+  // Time-of-day hot-zone centroids (SVG coords). Figures drift toward the
+  // currently-dominant zone based on the replay clock.
+  // Matches the existing phaseFor()/hot-zone logic already in the POC.
+  const HOT_ZONES = {
+    morning:  [ [180, 200], [220, 280], [260, 350] ],                      // Gates opening · North approach
+    midday:   [ [600, 360], [650, 420], [560, 310], [430, 370] ],          // Midway · Food court
+    afternoon:[ [380, 470], [420, 520], [460, 480], [520, 560] ],          // Grandstand feeders
+    evening:  [ [520, 560], [560, 610], [600, 580], [470, 640], [380, 620] ], // Concourse · Rodeo
+    lateNight:[ [300, 660], [360, 680], [420, 660] ]                       // Exits · BRT
+  };
+
+  function currentZones() {
+    const clockEl = document.getElementById('clock');
+    const t = clockEl ? clockEl.textContent.trim() : '12:00';
+    const h = parseInt(t.split(':')[0], 10) || 12;
+    if (h < 10)  return HOT_ZONES.morning;
+    if (h < 14)  return HOT_ZONES.midday;
+    if (h < 18)  return HOT_ZONES.afternoon;
+    if (h < 22)  return HOT_ZONES.evening;
+    return HOT_ZONES.lateNight;
+  }
+
+  function svgToPxLocal(sx, sy) {
+    const rect = stampedeMap.getBoundingClientRect();
+    return [ (sx / 1200) * rect.width, (sy / 780) * rect.height ];
+  }
+
+  function pxToLatLon(svgX, svgY) {
+    const lat = STAMPEDE_LAT + (svgY - 390) * LAT_PER_PX;
+    const lon = STAMPEDE_LON + (svgX - 600) * LON_PER_PX;
+    return [lat, lon];
+  }
+
+  function fmtLL(lat, lon) {
+    return lat.toFixed(4) + '°N · ' + Math.abs(lon).toFixed(4) + '°W';
+  }
+
+  // Seed 26 devices around the park with modest jitter
+  const N = 26;
+  const devices = [];
+  for (let i = 0; i < N; i++) {
+    const angle = (i / N) * Math.PI * 2;
+    const r = 140 + Math.random() * 140;
+    const sx = 600 + Math.cos(angle) * r + (Math.random() - 0.5) * 80;
+    const sy = 390 + Math.sin(angle) * r + (Math.random() - 0.5) * 80;
+    devices.push({
+      svgX: Math.max(40, Math.min(1160, sx)),
+      svgY: Math.max(40, Math.min(740, sy)),
+      vx: (Math.random() - 0.5) * 2,
+      vy: (Math.random() - 0.5) * 2,
+      zoneIdx: i % 4,
+      el: null
+    });
+  }
+
+  // Build DOM nodes
+  devices.forEach((d, i) => {
+    const el = document.createElement('div');
+    el.className = 'person-dot';
+    el.dataset.id = 'P' + (i + 1).toString().padStart(2, '0');
+    el.dataset.ll = '';
+    peopleLayer.appendChild(el);
+    d.el = el;
+  });
+
+  function step() {
+    const zones = currentZones();
+    devices.forEach((d, i) => {
+      // Pick a zone target — rotate occasionally
+      if (Math.random() < 0.02) d.zoneIdx = Math.floor(Math.random() * zones.length);
+      const target = zones[d.zoneIdx % zones.length];
+      // Attraction toward target + noise + velocity damping
+      const dx = target[0] - d.svgX;
+      const dy = target[1] - d.svgY;
+      d.vx = d.vx * 0.92 + (dx * 0.004) + (Math.random() - 0.5) * 0.8;
+      d.vy = d.vy * 0.92 + (dy * 0.004) + (Math.random() - 0.5) * 0.8;
+      // Clamp speed
+      const sp = Math.hypot(d.vx, d.vy);
+      if (sp > 3) { d.vx = (d.vx / sp) * 3; d.vy = (d.vy / sp) * 3; }
+      d.svgX = Math.max(40, Math.min(1160, d.svgX + d.vx));
+      d.svgY = Math.max(40, Math.min(740, d.svgY + d.vy));
+
+      const [px, py] = svgToPxLocal(d.svgX, d.svgY);
+      const [lat, lon] = pxToLatLon(d.svgX, d.svgY);
+      d.el.style.left = px + 'px';
+      d.el.style.top = py + 'px';
+      d.el.dataset.ll = fmtLL(lat, lon);
+      d.el.setAttribute('data-ll', fmtLL(lat, lon));
+    });
+  }
+
+  // Initial placement before first tick
+  step();
+  setInterval(step, 500);
+
+  // Respect the Crowd Density layer toggle via MutationObserver
+  const crowdToggle = document.querySelector('.layer-toggle[data-layer="crowd"]');
+  if (crowdToggle) {
+    const sync = () => {
+      if (crowdToggle.classList.contains('active')) peopleLayer.classList.remove('off');
+      else peopleLayer.classList.add('off');
+    };
+    sync();
+    const mo = new MutationObserver(sync);
+    mo.observe(crowdToggle, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  // Reposition on window resize (SVG scales, so DOM overlay needs to re-render)
+  window.addEventListener('resize', step);
+})();
+</script>
+
+
+
+</body></html>
